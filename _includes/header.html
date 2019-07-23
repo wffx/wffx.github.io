@@ -8,7 +8,6 @@
             <div class="row-details">
               <h4 class="list-group-item-heading">{{ site.author }}</h4>
               <p class="list-group-item-text">{{ site.about }}</p>
-              <!-- {% include social_links.html %} -->
             </div>
             <div class="navbar-header pull-right">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -21,10 +20,10 @@
           <div class="row">
             <h2 class="blog-title-pro {% if site.allowsearch ==  true %}col-md-6 col-sm-12 col-xs-12 {% endif %}">{{ page.title }}</h2>
             {% if site.allowsearch ==  true %}
-            <div class="col-md-6 col-sm-12 col-xs-12 searchcontrol" id="js-search">
+            <!-- <div class="col-md-6 col-sm-12 col-xs-12 searchcontrol" id="js-search">
               <input class="form-control" type="text" id="js-search__input" placeholder="Search">
               <ul class="search__results" id="js-search__results"></ul>
-            </div>
+            </div> -->
             {% endif %}
             </div>
             <p class="info">

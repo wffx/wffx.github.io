@@ -1,17 +1,17 @@
-title: wffx
+title: ssr
 description: My Personal Blog
-author: wffx
-logo: /hcz-jekyll-blog/static/img/1.png
-# github: https://github.com/codeasashu
-about: CS, Cryptography
-
+author: 朔日
+logo: /static/img/1.png
+github: https://github.com/wffx
+about: 积微言细, 自就鸿文
 baseurl: ""
 url: ""
 
-allowsearch: true
+allowsearch: false
+excerpt_separator: <!--more-->
 
-disqus_shortname: aboutashu
-google_analytics: UA-72862926-1
+# disqus_shortname: sr
+# google_analytics: UA-72862926-1
 
 share:
   twitter_username: \#

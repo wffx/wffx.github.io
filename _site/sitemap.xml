@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ssr</title>
+    <description>My Personal Blog</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 23 Jul 2019 22:33:41 +0800</pubDate>
+    <lastBuildDate>Tue, 23 Jul 2019 22:33:41 +0800</lastBuildDate>
+    <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>勿忘</title>
+        <description>&lt;p&gt;老早之前就想过弄个博客，但一直嫌麻烦，拖到今天，未来博客主要也是分享一些自己的见解，主要还是技术相关的，勿忘初心。
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;p&gt;目前博客没有开启评论的功能，所以如果有哪篇文章里有什么是错的话，烦请私信：shuori2014@gmail.com&lt;/p&gt;
+
+&lt;p&gt;本博客是jekyll提供的静态解析，节约时间随便从网上找的一个模板改的，后期等文章数量多的时候再进行功能更新&lt;/p&gt;
+</description>
+        <pubDate>Sat, 20 Jul 2019 21:50:39 +0800</pubDate>
+        <link>http://localhost:4000/%E6%9D%82%E9%A1%B9/2019/07/20/Hello.html</link>
+        <guid isPermaLink="true">http://localhost:4000/%E6%9D%82%E9%A1%B9/2019/07/20/Hello.html</guid>
+        
+        
+        <category>杂项</category>
+        
+      </item>
+    
+      <item>
+        <title>Hello World!</title>
+        <description>&lt;p&gt;Hello world!&lt;/p&gt;
+</description>
+        <pubDate>Sat, 04 Jun 2016 21:50:39 +0800</pubDate>
+        <link>http://localhost:4000/%E6%9D%82%E9%A1%B9/2016/06/04/Hello-en.html</link>
+        <guid isPermaLink="true">http://localhost:4000/%E6%9D%82%E9%A1%B9/2016/06/04/Hello-en.html</guid>
+        
+        
+        <category>杂项</category>
+        
+      </item>
+    
+    
+  </channel>
+</rss>

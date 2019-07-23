@@ -12,8 +12,11 @@ title: Blog
         <div class="row-content">
           <div class="least-content">{{ post.date | date_to_string }}</div>
           <h4 class="list-group-item-heading"><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></h4>
-
-          <p class="list-group-item-text">{{ post.content | strip_html | truncatewords: 20 }}</p>
+          {% if post.lang == 'zh' %}
+          <p class="list-group-item-text">{{ post.excerpt }}</p>
+          {% else %}
+          <p class="list-group-item-text">{{ post.content | truncatewords: 20 | strip_html  }}</p>
+          {% endif %}
         </div>
       </div>
       <div class="list-group-separator"></div>

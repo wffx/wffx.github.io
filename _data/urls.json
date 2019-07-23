@@ -11,18 +11,8 @@
     "icon": "fa-comments"
   },
   {
-    "text": "Crypto",
-    "url": "/projects",
+    "text": "Misc",
+    "url": "/misc/",
     "icon": "fa-desktop"
-  },
-  {
-    "text": "Misc",
-    "url": "/misc/",
-    "icon": "fa-graduation-cap",
-  },
-  {
-    "text": "Misc",
-    "url": "/misc/",
-    "icon": "fa-graduation-cap",
   }
 ]
