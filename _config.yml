@@ -6,6 +6,8 @@ github: https://github.com/wffx
 about: 积微言细, 自就鸿文
 baseurl: ""
 url: ""
+email: 联系
+# port: 80
 
 allowsearch: false
 excerpt_separator: <!--more-->
