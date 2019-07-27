@@ -1,13 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ssr</title>
+    <title>wffx</title>
     <description>My Personal Blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 23 Jul 2019 22:33:41 +0800</pubDate>
-    <lastBuildDate>Tue, 23 Jul 2019 22:33:41 +0800</lastBuildDate>
+    <pubDate>Sat, 27 Jul 2019 11:10:04 +0800</pubDate>
+    <lastBuildDate>Sat, 27 Jul 2019 11:10:04 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>过去两年的一些思考（一）</title>
+        <description>&lt;p&gt;本文主要分享一下，自己读研两年的关于密码学学习的一些思考和体会。（未完, 秘密共享篇）
+&lt;!--more--&gt;&lt;/p&gt;
+&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;
+三四年前，人工智能深度学习还不像现在这么火，这么万金油。那时候最火的是数据挖掘和云计算，听的很多的是大数据处理框架，HadHoop，spark等，还有各种云计算概念saas, paas和各种硬件虚拟化。当时自己心心念念的是系统安全，阴差阳错的入了密码学的坑。当初选这个方向一方面是因为密码学在安全领域中比较基础，可以学点数学，另外一个重要原因是因为当时系统安全没有找到合适的导师（主要是自己菜）。不过有一点，时至今日，我仍然认为密码学在形式化和可解释性上，比机器学习，深度学习之类的算法更有魅力。
+&lt;/p&gt;
+
+&lt;p&gt;本人所在实验室大方向还是做秘密共享，这东西有个好处是数学要求不高，基本大学的线性代数知识就能应付。但也正因为此，大多数的坑都被占完了，你现在再去看Crypto, EuroCrypto, AsiaCrypto会议上的关于秘密共享的文章，不超过一只手数。引用大佬的话说，“盛宴已过”。如果有的选的话，不建议做这个方向。如果不幸选了这个方向，也没关系，一定要与时俱进，多看点新东西，尝试着与其结合，在秘密共享上添加一些新特性或者完全将它作为primitive用到其他构造中。这样再继续走下去，你大概也就不会局限于秘密共享这个方向了，便能看到其他众多研究方向的广阔天地。
+&lt;/p&gt;
+
+&lt;h2 id=&quot;秘密共享&quot;&gt;秘密共享&lt;/h2&gt;
+
+&lt;p&gt;（门限）秘密共享最早是79年Shamir提出，到今天已经四十周年了。内容很丰富，我尽量凭我自己的理解用最短的文字内讲清楚。我大致将其分成以下几个阶段：混沌阶段，发展阶段，平缓阶段。这些阶段不是严格按照我的时间线划分的，会有重叠，以下给出各阶段的详细划分和划分原因。&lt;/p&gt;
+
+&lt;h3 id=&quot;混沌阶段1979-1990&quot;&gt;混沌阶段（1979-1990）&lt;/h3&gt;
+
+&lt;p&gt;早期秘密共享刚提出来是说，一个秘密s分成n份（share），使得任意t份能够恢复秘密。一般来说，一个概念刚提出来的时候往往是不完备的，所以那个时间点，继续往下拓展的话，我总结有两条路。第一条路，实现这种功能的方法，除了用Shamir拉格朗日差值多项式的，是否还有其他。第二条路，恢复秘密的集合能否更加形式化，更general。以下我主要从这两条路来分析。&lt;/p&gt;
+
+&lt;p&gt;
+第一条路，能否使用其他的方法实现这个功能。
+&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;准确来说，秘密共享是79年由Shamir和Blakley分别提出。前者是基于多项式，后者是基于超平面几何（可以理解称向量空间）。之后82年Mignotte提出CRT去实现，Bloom等83年给出了加强版。89年Benaloh提出circuit的方式实现。后来还有很多使用从编码角度实现，如线性码。总的来说，从实现方法角度来看，大致分成四类。基于多项式；基于CRT；基于Circuit；基于各类编码。
+    &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;第二条路，概念上的形式化。&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;89年Ito给出了一般访问结构的定义，使得秘密共享的定义变的更加general。意思是说，将恢复秘密的集合簇定义成访问结构，访问结构中的任意集合可以恢复秘密，称之为授权集，访问结构以外的集合称之为非授权集。由此大大拓宽了秘密共享的研究范围。我们可以定义各种千奇百怪的访问结构。由此秘密共享进入了下一阶段。
+    &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;发展阶段1990-2010&quot;&gt;发展阶段（1990-2010）&lt;/h3&gt;
+&lt;p&gt;当秘密共享的概念逐渐清晰的时候，研究者就得思考如何让它的内容更加丰富（水paper）。我将其分成两个方向：第一个方向，针对不同种应用场景，定义出各种千奇百怪的访问结构。第二个方向，在秘密共享安全性的基础上添加各种新特性。这里强调下，由于部分文章太过久远，太过繁杂，本人水平有限，统计的未必完备，有错误缺漏之处还请指出。&lt;a href=&quot;mailto: shuori2014@gmail.com&quot;&gt;邮箱&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;第一个方向，不同种访问结构的秘密共享&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;99年Morillo等提出权重秘密共享。每个share有着不同的权重，参与恢复秘密的share达到一定权重限界，即可恢复出秘密。最简单的实现方法就是控制CRT门限方案中模数的大小来达到目标。&lt;/li&gt;
+  &lt;li&gt;98年Ghodosi等提出compartment秘密共享。秘密分发给不同compartment中不同的参与者，最终要求每个compartment出一定的参与者来恢复秘密且所以参与者还得满足另外一个总门限。最简单的实现方法可以是使用双变量多项式去实现，每个compartment获得一个多项式，再根据多项式划分share，但是这会对总门限有很多限制。如果你能构造出不同compartment不同门限，同时还没有限制总门限的一般性方法话，投一篇很好的会议和期刊应该都没问题。&lt;/li&gt;
+  &lt;li&gt;07年Tassa提出Hierarchical门限秘密共享。将share分级，t个share必须达到各自的等级，才能恢复出秘密。使用伯克霍夫插值多项式实现。&lt;/li&gt;
+  &lt;li&gt;multilevel的门限秘密共享，从访问结构上看有点类似compartment和hierarchical的叠加，也是将share分成多个level，每个level具有不同的门限，level越高门限越低，高level的share替换低level的share，用到低level的share恢复过程。没有实质性新的内容.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;第二个方向，不同种特性的秘密共享。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;87年Feldman提出verfiable的秘密共享，91年Pedersen提出改进。Verfiable秘密共享水文章的实在太多。总的来说，主要分成两大类实现方法，一类通过设计通信协议，来完成验证，比较经典的实验方法是双变量多项式。二类，通过引入数学难题，添加commitment机制，验证的有效性依赖于数学难题。还有一些小众的验证方法，当参与这k（k&amp;gt;t）时，用多余的share去验证share的合法性。前两大类，广泛见于各种水网络的论文中，比如换个数学难题，换个通信模型减少通信量等等。&lt;/li&gt;
+  &lt;li&gt;95年Herzberg等提出proactive秘密共享。每个shareholder可以在不改变门限的前提下，动态的修改自己的share，通过shareholder之间相互发share来实现。&lt;/li&gt;
+  &lt;li&gt;threshold-changebale秘密共享和dynamic秘密共享，将其分成一类，意思是可以动态的修改访问结构，通过shareholder之间相互发送子share来实现。&lt;/li&gt;
+  &lt;li&gt;可纠错的秘密共享和可容错的秘密共享分成一类，顾名思义可纠错就是参与恢复秘密的share中有错可以纠正，可容错就是参与恢复秘密的share允许出现一定量的错误。实现都是从编码的角度，构造容错或者纠错的线性码来实现。但是说实话，我看过TIT的一篇12年的文章，感觉很不实用，主要是理论上的意义。&lt;/li&gt;
+  &lt;li&gt;还有一些小技巧，比如Randomized Component（15，TIFS），在share中加小的noise，使得m（m&amp;gt;t）个share全部参与恢复秘密，简而言之，就是当参与者人数大于t时，大于t小于m的那部分参与者也得参与恢复秘密，避免多出那部分人划水摸鱼。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;平缓阶段2010-至今&quot;&gt;平缓阶段（2010-至今）&lt;/h3&gt;
+&lt;p&gt;进入10年代至今，混沌阶段和发展阶段提这些方向和类别，逐渐趋于成熟，一般再写上述类别的文章，基本都是现有技巧的排列组合或者引入新的难题，比如格难题。实力强劲的，可以引入信息论等更为严谨的方法形式化分析一遍，也可以发好文章，但水平要求较高。还有一种就是引入一些高级特性或者打破原有的理论bound，这些基本都是顶会水平文章，数量极少。总的来说，“新汤换旧药”，秘密共享方向越来越难出好文章了。看着身边的搞机器学习人工智能的方向的同学，动不动顶会顶刊，简直羡慕死。&lt;/p&gt;
+
+&lt;p&gt;以下，介绍一些自我认为秘密共享最前沿的方向和文章。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Boyle等人16年开始提出的Homomorphic秘密共享和Functional秘密共享，这些概念想法还是来自于Fully Homomorphic Encryption (FHE)和Functional Encryption (FE). 意思是说我们可以在share的基础上执行一个evaluation function，对应恢复出的秘密也执行了相同的evaluation操作。Homomorphic秘密共享的范围，更广，可以在多个秘密对应的多个share之间执行evaluation操作。这类方案最trivial的构造就是用对应的FHE和FE去构造。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Boyle本人是做安全多方计算出身，而秘密共享的一个重要应用场景就是安全多方计算。在16年Crypto的breaking circuit size barrier for secure computation under DDH（Best Paper，最早提出HSS的概念）中，给出的构造有点类似与bits decomposition,效率很低，不太能理解为什么是bestpaper，当然我也没完全看懂，可能更重要的是理论的意义（18年的Crypto的best paper更加确信了这种感觉）。后来18年AsiaCrypt也出了一篇Homomorphic Secret Sharing for Low Degree Polynomials，用了全同态加密的特性，弄明白了后感觉也就那样，可能方向比较新。19年EuroCrypt上Boyle等写了一篇Homomorphic Secret Sharing from Lattices Without FHE，目前没仔细看，有机会的话，会在后面bolg里分享。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;总的来说，这类的HSS方案，基本都是从安全多方计算的技巧上去做的，跟门限秘密共享还不太一样。
+自己也尝试过用去构造threshold版本，蛮难的，搞不定，基本搞出来应该就是顶会水平的了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Tianren Liu清华姚班出身，MIT的博士，他的两篇文章Breaking the Circuit-Size Barrier in Secret Sharing（STOC_2018）和Towards Breaking the Exponential Barrier for General Secret Sharing（EuroCrypto_2018）都是属于打破理论bound的那一类。
+的确是厉害，我研一的时候完全看不懂。大概知道，第一篇是能够打破现有circuit类秘密共享的size bound，第二篇是打破一般访问结构秘密共享构造过程中share冗余的问题的bound。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Non-Malleable Secret Sharing这类秘密共享也很新，我印象中都是18,19年Crypto和EuroCrypto出的文章，想法主要是从leakage-resilient cryptography中来的。这类方案据说是为了应对旁路攻击这种发生泄露带来的安全问题。
+很神秘，我最开始是从MIT的密码学组主页上了解到leakage-resilient cryptography，完全不懂这类文章，也没仔细研究过。感觉现在的密码学一个趋势是越来越注重各种circuit实现，而这种背景恰恰是自己欠缺的，得多做些功课。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;秘密共享的应用&quot;&gt;秘密共享的应用&lt;/h1&gt;
+
+&lt;p&gt;你可以在很多秘密共享相关论文中，看到大量关于秘密共享的应用，以下简单说下我所了解的应用。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;组认证，用于验证一个组的身份合法性，道理很简单，一个组的人恢复出正确的秘密s，即说明身份的合法性。&lt;/li&gt;
+  &lt;li&gt;秘钥管理，这方面你可以看到找到写网络中用秘密共享做秘钥管理的文章。&lt;/li&gt;
+  &lt;li&gt;安全多方计算，安全多方计算中的一类就是用秘密共享和通信协议相结合做的，但是很少有文章用到这种门限特性，大多数都是简单的那种一般访问结构。另外一个重要原因，是因为这方面文章看的不是很多，所以就不展开说了。&lt;/li&gt;
+  &lt;li&gt;门限密码学，将秘密共享和公私钥方案相结合，典型的就是门限解密和门限签名。自己最终的小论文也是关于这个。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;秘密共享应用中的邪教或者边缘方向&quot;&gt;秘密共享应用中的”邪教“或者”边缘方向“&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;图片秘密共享和视觉秘密共享，前者是将原来秘密共享中的秘密，换成了图片；后者是将秘密共享的概念用到视觉上，视觉上几张图片合到一起视觉上能够还原图像，单一的图片是糊的，视觉上看不出来是什么。不喜欢的原因，主要是因为它玄学，没有现代密码学要求的那种严谨证明。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;信息隐藏中的隐写术之类的，不能严谨证明凭经验来分析证明安全的一类方向或者完全不考虑安全性只考虑功能性的一类方向，貌似我遇到过不少年龄较大的国内老师，都是搞这个方向的，现在这些都已经越来越边缘化了，主流的IACR上的会议或者期刊上很少能见到这类文章。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sat, 20 Jul 2019 21:50:39 +0800</pubDate>
+        <link>http://localhost:4000/cryptography/2019/07/20/somepoints.html</link>
+        <guid isPermaLink="true">http://localhost:4000/cryptography/2019/07/20/somepoints.html</guid>
+        
+        
+        <category>cryptography</category>
+        
+      </item>
     
       <item>
         <title>勿忘</title>
@@ -16,7 +133,8 @@
 
 &lt;p&gt;目前博客没有开启评论的功能，所以如果有哪篇文章里有什么是错的话，烦请私信：shuori2014@gmail.com&lt;/p&gt;
 
-&lt;p&gt;本博客是jekyll提供的静态解析，节约时间随便从网上找的一个模板改的，后期等文章数量多的时候再进行功能更新&lt;/p&gt;
+&lt;p&gt;本博客是jekyll提供的静态解析，节约时间随便从网上找的一个&lt;a href=&quot;https://github.com/codeasashu/hcz-jekyll-blog&quot;&gt;模板&lt;/a&gt;改的，后期等文章数量多的时候再进行功能更新&lt;/p&gt;
+
 </description>
         <pubDate>Sat, 20 Jul 2019 21:50:39 +0800</pubDate>
         <link>http://localhost:4000/%E6%9D%82%E9%A1%B9/2019/07/20/Hello.html</link>
