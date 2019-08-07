@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "过去两年的一些思考（一）"
+title:  "密码学学习总结（一）"
 date:   2019-07-20 13:50:39
 categories: cryptography
 lang: zh
