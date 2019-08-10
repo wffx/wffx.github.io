@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "密码学学习总结（一）"
-date:   2019-07-20 13:50:39
+date:   2019-07-26
 categories: cryptography
 lang: zh
 excerpt_separator: <!--more-->

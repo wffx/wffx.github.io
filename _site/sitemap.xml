@@ -5,9 +5,176 @@
     <description>My Personal Blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 07 Aug 2019 22:57:36 +0800</pubDate>
-    <lastBuildDate>Wed, 07 Aug 2019 22:57:36 +0800</lastBuildDate>
+    <pubDate>Sat, 10 Aug 2019 17:26:43 +0800</pubDate>
+    <lastBuildDate>Sat, 10 Aug 2019 17:26:43 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>计算字符串表达式</title>
+        <description>&lt;p&gt;最近笔试写到一道算法题，输入一个字符串，输出该对应字符串计算得到的值。当时没搞定，给补上。
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;p&gt;没有完全还原题目，但大致思路是一样的。&lt;/p&gt;
+
+&lt;p&gt;题目如下：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;输入一个字符串，比如：”8+(7-3)*3+5“， 输入的字符之包括’+’,’-‘,’*’,’/’，‘（’，‘）’。输出该表达式的计算值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其实数据结构课上已经做过这道题目，当时一时没想起来，用了很蠢的方法写，写了半天也没弄出来。下面简述下思路：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;遍历该字符串，将该字符串转换成后缀字符串。（即后续遍历得到的字符串，通常的书写逻辑得到的中缀字符串，中序遍历得到。）
+    &lt;ul&gt;
+      &lt;li&gt;数字直接输出&lt;/li&gt;
+      &lt;li&gt;’(‘直接入栈&lt;/li&gt;
+      &lt;li&gt;对于符号，判断该符号和栈顶元素符号优先级
+        &lt;ul&gt;
+          &lt;li&gt;栈顶符号优先级较大： 将该符号入栈&lt;/li&gt;
+          &lt;li&gt;栈顶符号优先级小于或等于： 将栈顶符号弹出并输出，再将该符号入栈&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;‘)’直接输出所有栈内元素直到遇到最近的’(‘括号&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;得到后缀字符串后，遍历后缀字符串：
+    &lt;ul&gt;
+      &lt;li&gt;数字直接入栈&lt;/li&gt;
+      &lt;li&gt;遇到符号直接弹出栈内的两个操作数，计算后将结果压入栈内&lt;/li&gt;
+      &lt;li&gt;遍历完字符串后弹出栈内剩余的最后一个值，即最终的输出结果&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;举例： ”8+(7-3)*3+5“ 的后缀字符串是”873-3*5++”，最终输出的结果是25&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;string&amp;gt;
+#include &amp;lt;vector&amp;gt;
+using namespace std;
+
+// 判断符号优先级
+bool priority_g(char a, char b) {
+	
+	if ((a == '*' || a == '/') &amp;amp;&amp;amp; (b == '+' || b == '-')) {
+		return true;
+	}
+	else if (b == '(') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+// 将中缀字符串转换称后缀字符串
+string infixtosuffix(string&amp;amp; ste) {
+	vector&amp;lt;char&amp;gt; vec;
+	string st;
+	char temp;
+
+	for (int i = 0; i &amp;lt; ste.size(); ++i) {
+		if (ste[i] &amp;lt;= '9' &amp;amp;&amp;amp; ste[i] &amp;gt;= '0') {
+			st.push_back(ste[i]);
+		}
+		else if (ste[i] == '(') {
+			vec.push_back(ste[i]);
+		}
+		else if (ste[i] == '+' || ste[i] == '-' || ste[i] == '*' || ste[i] == '/') {
+			if (vec.empty() == false &amp;amp;&amp;amp; priority_g(ste[i], vec.back()) ) {
+				vec.push_back(ste[i]);
+			}
+			else if(vec.empty() == false) {
+				st.push_back(vec.back());
+				vec.pop_back();
+				vec.push_back(ste[i]);
+			}
+			else {
+				vec.push_back(ste[i]);
+			}
+		}
+		else {
+			while (vec.back() != '(')
+			{
+				st.push_back(vec.back());
+				vec.pop_back();
+			}
+			vec.pop_back();
+		}
+	}
+	while (vec.empty() == false) {
+		st.push_back(vec.back());
+		vec.pop_back();
+	}
+
+	return st;
+}
+
+// 计算后缀字符串的值
+int calc(string st) {
+	vector&amp;lt;int&amp;gt; vi;
+	int a, b;
+
+	for (int i = 0; i &amp;lt; st.size(); ++i) {
+		if (st[i] &amp;gt;= '0' &amp;amp;&amp;amp; st[i] &amp;lt;= '9') {
+			vi.push_back(st[i] - '0');
+		}
+		else {
+			a = vi.back();
+			vi.pop_back();
+			b = vi.back();
+			vi.pop_back();
+
+			switch (st[i])
+			{
+				case '+' :
+					vi.push_back(a + b);
+					break;
+				case '-':
+					vi.push_back(b - a);
+					break;
+				case '*':
+					vi.push_back(b * a);
+					break;
+				case '/':
+					vi.push_back(b / a);
+					break;
+				default:
+					vi.push_back(b / a);
+					break;
+			}
+		}
+	}
+	if (vi.empty()) {
+		cout &amp;lt;&amp;lt; &quot;error&quot; &amp;lt;&amp;lt; endl;
+		return 0;
+	}
+	else {
+		return vi.back();
+	}
+}
+
+int main() {
+	string ste;
+
+	cin &amp;gt;&amp;gt; ste;
+	ste = infixtosuffix(ste);
+
+	cout &amp;lt;&amp;lt; calc(ste) &amp;lt;&amp;lt; endl;
+	
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Sat, 10 Aug 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/algorithm/2019/08/10/alg1.html</link>
+        <guid isPermaLink="true">http://localhost:4000/algorithm/2019/08/10/alg1.html</guid>
+        
+        
+        <category>algorithm</category>
+        
+      </item>
     
       <item>
         <title>密码学学习总结（二）</title>
@@ -25,11 +192,13 @@
 
 &lt;p&gt;这部分本来是想介绍一些格的基本理论的，后来想想这方面的survey这么多，还是不多费口舌了，另外讲清楚得敲很多公式，markdown实际显示效果也不如latex，就不费劲折腾了。下面大概说下，我的学习经历和过程，给后来人一个建议。&lt;/p&gt;
 
-&lt;h3 id=&quot;基础&quot;&gt;基础&lt;/h3&gt;
+&lt;h3 id=&quot;格密码基础&quot;&gt;格密码基础&lt;/h3&gt;
 
-&lt;p&gt;这一阶段，主要学习格的定义和一些基本知识，比如：格基约化，LLL算法之类的。这部分我推荐两本书，一本是UTM系列中的An Introduction to Mathematical Cryptography，有一章节专门介绍Lattice的。写的通俗易通。另外一本书是Lattice-based Cryptography，作者是Daniele Micciancio和Oded Regev。你看早期2000-2010年间的格密码文章能经常看到这两人的身影。这本书我是跳着看的，没有全看完。&lt;/p&gt;
+&lt;p&gt;这一阶段，主要学习格的定义和一些基本知识，比如：格基约化，LLL算法，SVP难题，SIVP难题之类的。这部分我推荐两本书，一本是UTM系列中的An Introduction to Mathematical Cryptography，有一章节专门介绍Lattice的。写的通俗易通。另外一本书是Lattice-based Cryptography，作者是Daniele Micciancio和Oded Regev。你看早期2000-2010年间的格密码文章能经常看到这两人的身影。这本书我是跳着看的，没有全看完。&lt;/p&gt;
 
 &lt;h3 id=&quot;现代的格密码基础&quot;&gt;现代的格密码基础&lt;/h3&gt;
+
+&lt;p&gt;现今看到的大部分格密码相关的方案主要是依赖于Learning with Errors (LWE), Short Integer Solution (SIS)难题，后来有了环上推广的版本，Ring-LWE和Ring-SIS。这些难题的提出，主要是因为早期SVP,SIVP是worst case下难题，需要用额外的技巧，来提出新的难题，使得能从worst case规约到average case。这部分的工作主要集中在2000年到2008年间。主要的成果也是SIS和LWE的提出。关于其中的规约一直读的一直半解，实在惭愧。&lt;/p&gt;
 
 &lt;p&gt;了解了基本概念后，强烈建议阅读Peikert的&lt;a href=&quot;https://web.eecs.umich.edu/~cpeikert/pubs/lattice-survey.pdf&quot;&gt;survey&lt;/a&gt;,能节约你的大量时间去了解很多细枝末节的构造方案技巧，对现代的格密码方案有个初步的认识。期间除了看这边survey外，也看了很多关于lattice的报告ppt，有的时候看这些论文会太形式化，看这些ppt会比较简洁，有的时候还会有例子说明，能帮助理解。这篇survey花了我很长时间，尤其是到Ring-LWE和Ring-SIS时，我又去找了原论文阅读，恶补了一波代数知识,才勉强搞明白。但是，时至今日，On Ideal Lattices and Learning with error over rings_full version和On Lattices, Learning with Errors, Random Linear codes, and Cryptography这两篇文章里的，LWE规约和Ring-LWE规约还是看不懂。就大概不那么严谨的能明白为什么LWE和Ring-LWE是难的。&lt;/p&gt;
 
@@ -39,9 +208,9 @@
 
 &lt;p&gt;这玩意真是又爱又恨。。。（待续）&lt;/p&gt;
 </description>
-        <pubDate>Sat, 20 Jul 2019 21:50:39 +0800</pubDate>
-        <link>http://localhost:4000/cryptography/2019/07/20/lattice.html</link>
-        <guid isPermaLink="true">http://localhost:4000/cryptography/2019/07/20/lattice.html</guid>
+        <pubDate>Tue, 06 Aug 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/cryptography/2019/08/06/lattice.html</link>
+        <guid isPermaLink="true">http://localhost:4000/cryptography/2019/08/06/lattice.html</guid>
         
         
         <category>cryptography</category>
@@ -156,9 +325,9 @@
 &lt;/ul&gt;
 
 </description>
-        <pubDate>Sat, 20 Jul 2019 21:50:39 +0800</pubDate>
-        <link>http://localhost:4000/cryptography/2019/07/20/somepoints.html</link>
-        <guid isPermaLink="true">http://localhost:4000/cryptography/2019/07/20/somepoints.html</guid>
+        <pubDate>Fri, 26 Jul 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/cryptography/2019/07/26/somepoints.html</link>
+        <guid isPermaLink="true">http://localhost:4000/cryptography/2019/07/26/somepoints.html</guid>
         
         
         <category>cryptography</category>
