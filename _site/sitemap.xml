@@ -5,9 +5,32 @@
     <description>My Personal Blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 10 Aug 2019 17:26:43 +0800</pubDate>
-    <lastBuildDate>Sat, 10 Aug 2019 17:26:43 +0800</lastBuildDate>
+    <pubDate>Tue, 13 Aug 2019 21:22:49 +0800</pubDate>
+    <lastBuildDate>Tue, 13 Aug 2019 21:22:49 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>New repositories</title>
+        <description>&lt;p&gt;新开的一个repository，写了有一段时间，会持续不断的更新。
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;new-repository&quot;&gt;New Repository&lt;/h2&gt;
+
+&lt;p&gt;这个新开的Repository叫&lt;a href=&quot;https://github.com/wffx/Security_offer&quot;&gt;Security_offer&lt;/a&gt;，是的，就如同其名，本义就是为了找工作。后来写着写着觉得还蛮不错，整理下思路，系统化之前自己学过的东西。
+写的东西也绝对不是科普，记录几个我认为的关键要点，且大部分的知识点都写了相应的demo。另外，现在写的代码和当时刚学的时候写的心态很不一样，会考虑很多，不会像以前那样上去就是干。怎么说呢，很淡定，坦然？&lt;/p&gt;
+
+&lt;p&gt;前期打算重点整理，学过的一些计算机基础知识，OS，Linux kernel，c++, network，algorithm等等。前中期，陆续补充所本科和研究生学过的安全方面的知识，包括密码学，隐私保护，逆向，网络安全等等。后期重点是整理自己的新学的东西，包括机器学习等等新知识。&lt;/p&gt;
+
+&lt;p&gt;接下来很长一段时间，得奔波着找工作，blog以后重点还是写写总结和看新论文。而且之前写过的可能还得打磨打磨，总之，哇，还有好多事情要做。。。。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 12 Aug 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/%E6%9D%82%E9%A1%B9/2019/08/12/offer.html</link>
+        <guid isPermaLink="true">http://localhost:4000/%E6%9D%82%E9%A1%B9/2019/08/12/offer.html</guid>
+        
+        
+        <category>杂项</category>
+        
+      </item>
     
       <item>
         <title>计算字符串表达式</title>
