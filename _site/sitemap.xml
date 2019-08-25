@@ -5,9 +5,141 @@
     <description>My Personal Blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 13 Aug 2019 21:22:49 +0800</pubDate>
-    <lastBuildDate>Tue, 13 Aug 2019 21:22:49 +0800</lastBuildDate>
+    <pubDate>Sun, 25 Aug 2019 21:50:26 +0800</pubDate>
+    <lastBuildDate>Sun, 25 Aug 2019 21:50:26 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>排列组合</title>
+        <description>&lt;p&gt;本文主要对排列组合问题进行总结，包括：排列组合的递归实现，排列组合问题的STL实现等。
+&lt;!--more--&gt;&lt;/p&gt;
+&lt;h1 id=&quot;排列组合问题&quot;&gt;排列组合问题&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;问题描述
+    &lt;ul&gt;
+      &lt;li&gt;排列：将n个元素进行全排列或者从n个元素中选出k个元素进行全排列&lt;/li&gt;
+      &lt;li&gt;组合：从n个元素中选出k个元素&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;排列组合问题，我们可以将其解空间树画出来。画出来后，显而易见我们要不深度遍历，要不广度遍历。
+但是由于我们需要将到叶子节点的整条路径给输出，我们通常采用深度遍历的递归写法。
+因为广大遍历你需要在队列中添加额外的元素去保存，到当前节点的路径，会使得程序非常繁琐，所以大部分关于排列组合问题的写法，还是深度遍历的递归写法。&lt;/p&gt;
+
+&lt;h2 id=&quot;递归实现&quot;&gt;递归实现&lt;/h2&gt;
+
+&lt;h3 id=&quot;排列&quot;&gt;排列&lt;/h3&gt;
+&lt;p&gt;首先将解空间树给画出来，搞清楚什么时候递归到下一层，什么时候回溯，什么时候返回。&lt;/p&gt;
+
+&lt;p&gt;假定输入的n个元素不相等，以下是将n个元素进行全排列：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// start:全排列数组开始位置， end：数组的末尾
+void perm(int start, int end, int a[]) {
+	if(start == end) {
+		for(int i=0;i&amp;lt;end;++i) {
+			std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &quot; &quot;;
+		}
+		std::cout &amp;lt;&amp;lt; std::endl;
+		return;
+	} 
+
+	for(int i=start;i&amp;lt;end;++i) {
+		swap(a[start],a[i]);            
+		perm(start+1,end,a);            // 递归，+1表示下一层路径少一条，对start+1到end间元素进行全排列
+		swap(a[i],a[start]);            // 回溯
+	}
+}
+// e.g: a[5] = {1, 2, 3, 4, 5}; perm(0,5,a);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;组合&quot;&gt;组合&lt;/h3&gt;
+&lt;p&gt;组合问题不同于排列问题，元素没有顺序。因此我们需要用一个标记数组去表示那些元素本访问过，按照选取顺序一步一步往下走。
+一旦访问的元素个数到达选取个数，输出并回溯到上一层。
+但注意，这里回溯到上一层需要保留当前访问元素的位置，这也是和排列问题的区别。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意：组合问题还有另外一种思路，就是将其转换成排列问题求解，具体见STL组合问题的实现。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;假定输入的n个元素不相等，以下是从n个元素中取出k个元素：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//p:当前指向的数组位置，t是当前访问过元素的个数，k是选取元素的总数，n是元素总数，a是数组，v是标记数组
+void combin(int p, int t, int k, int n, int a[], bool v[]) {
+	if(t == k) {
+		for(int i=0;i&amp;lt;n;++i) {
+			if(v[i] == true) {
+				std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &quot; &quot;;
+			}
+		}
+		std::cout &amp;lt;&amp;lt; std::endl;
+		return;
+	}
+
+	if(p == n)	return;
+
+	if(v[p] == false) {
+		v[p] = true;
+		combin(p+1, t+1, k, n, a, v);   // 递归，从a[p+1,n-1]中选取k-t-1个元素
+		v[p] = false;                   // 回溯
+	}
+
+	combin(p+1, t, k, n, a, v);     // 递归，从a[p+1,n-1]中选取k-t个元素
+}
+// e.g:  a[5] = {1, 2, 3, 4, 5}; v[5] = {0, 0, 0, 0, 0};combin(0, 0, 3, 5, a, v);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h2 id=&quot;stl实现&quot;&gt;STL实现&lt;/h2&gt;
+
+&lt;h3 id=&quot;排列-1&quot;&gt;排列&lt;/h3&gt;
+
+&lt;p&gt;假设n个元素不同，STL实现如下：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void perm(std::vector&amp;lt;int&amp;gt; &amp;amp;vec) {
+	std::copy(vec.begin(), vec.end(), std::ostream_iterator&amp;lt;int&amp;gt;(std::cout, &quot; &quot;));
+	std::cout &amp;lt;&amp;lt; std::endl;
+	while(next_permutation(vec.begin(), vec.end())) {
+		std::copy(vec.begin(), vec.end(), std::ostream_iterator&amp;lt;int&amp;gt;(std::cout, &quot; &quot;));
+		std::cout &amp;lt;&amp;lt; std::endl;
+	}
+	return;
+}
+// e.g.: int a[N] = {1,2,3,4,5}; std::vector&amp;lt;int&amp;gt; sel(v,v+5);perm(vec);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;组合-1&quot;&gt;组合&lt;/h3&gt;
+&lt;p&gt;对于组合问题的另外一种思路就是将其转换成排列问题。STL的实现正是如此。例如：从n个元素中选取k个元素。我们可以用0-1标记数组代替，其中k个1，n-k个0。
+将这个标记数组全排列后，1对应下标的原数组序列即使组合的结果。&lt;/p&gt;
+
+&lt;p&gt;假设n个元素不同，STL实现如下：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void combin(std::vector&amp;lt;int&amp;gt; &amp;amp;sel, int a[]) {
+	do{
+		for(int i=0;i&amp;lt;sel.size();++i) {
+			if(sel[i] == 1) {
+				std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &quot; &quot;;
+			}
+		}
+		std::cout &amp;lt;&amp;lt; std::endl;
+	}while(prev_permutation(sel.begin(),sel.end()));
+}
+// e.g.: int a[N] = {1,2,3,4,5}; int v[N] = {1,1,1,0,0};std::vector&amp;lt;int&amp;gt; sel(v,v+5); combin(sel, a);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;衍生的相关问题&quot;&gt;衍生的相关问题&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目标求和&lt;br /&gt;
+给定n个不同的数和一个目标值，是否存在k个数相加为目标值&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 24 Aug 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/algorithm/2019/08/24/alg2.html</link>
+        <guid isPermaLink="true">http://localhost:4000/algorithm/2019/08/24/alg2.html</guid>
+        
+        
+        <category>algorithm</category>
+        
+      </item>
     
       <item>
         <title>New repositories</title>

@@ -7,15 +7,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="shortcut icon" href="/static/img/favicon.ico" />
-        <title>密码学学习总结（二） - wffx</title>
+        <title>排列组合 - wffx</title>
         <meta name="author" content="朔日" />
-        <meta name="description" content="密码学学习总结（二）" />
-        <meta name="keywords" content="密码学学习总结（二）, wffx, cryptography" />
+        <meta name="description" content="排列组合" />
+        <meta name="keywords" content="排列组合, wffx, algorithm" />
 
         <meta content="0" property="fb:app_id">
         <meta content="wffx" property="og:site_name">
         
-          <meta content="密码学学习总结（二）" property="og:title">
+          <meta content="排列组合" property="og:title">
         
         
           <meta content="article" property="og:type">
@@ -24,10 +24,10 @@
           <meta content="My Personal Blog" property="og:description">
         
         
-          <meta content="http://localhost:4000/cryptography/2019/08/06/lattice.html" property="og:url">
+          <meta content="http://localhost:4000/algorithm/2019/08/24/alg2.html" property="og:url">
         
         
-          <meta content="2019-08-06T00:00:00+08:00" property="article:published_time">
+          <meta content="2019-08-24T00:00:00+08:00" property="article:published_time">
           <meta content="http://localhost:4000/about/" property="article:author">
         
         
@@ -35,7 +35,7 @@
         
         
           
-          <meta content="cryptography" property="article:section">
+          <meta content="algorithm" property="article:section">
           
         
         
@@ -45,10 +45,10 @@
         <meta name="twitter:site" content="@\#">
         <meta name="twitter:creator" content="@\#">
         
-          <meta name="twitter:title" content="密码学学习总结（二）">
+          <meta name="twitter:title" content="排列组合">
         
         
-          <meta name="twitter:url" content="http://localhost:4000/cryptography/2019/08/06/lattice.html">
+          <meta name="twitter:url" content="http://localhost:4000/algorithm/2019/08/24/alg2.html">
         
         
           <meta name="twitter:description" content="My Personal Blog">
@@ -106,18 +106,18 @@
           </div>
           <div class="col-md-9 col-sm-8 col-xs-12">
           <div class="row">
-            <h2 class="blog-title-pro ">密码学学习总结（二）</h2>
+            <h2 class="blog-title-pro ">排列组合</h2>
             
             </div>
             <p class="info">
               
-                <span class="time">06 Aug 2019</span>
+                <span class="time">24 Aug 2019</span>
               
               
                 <span class="categories">
                   &raquo; 
                   
-                    <a href="/category/cryptography">cryptography</a>
+                    <a href="/category/algorithm">algorithm</a>
                     
                   
                 </span>
@@ -143,7 +143,7 @@
 	
     
 	
-	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12 current-menu-item lattice.html"><a href="/" target="_self"><i class="fa fa-home"></i> Home</a></li>
+	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12 current-menu-item alg2.html"><a href="/" target="_self"><i class="fa fa-home"></i> Home</a></li>
 
 	
 	
@@ -153,7 +153,7 @@
 	
     
 	
-	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12  lattice.html"><a href="/about/" target="_self"><i class="fa fa-comments"></i> About</a></li>
+	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12  alg2.html"><a href="/about/" target="_self"><i class="fa fa-comments"></i> About</a></li>
 
 	
 	
@@ -163,7 +163,7 @@
 	
     
 	
-	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12  lattice.html"><a href="/misc/" target="_self"><i class="fa fa-desktop"></i> Misc</a></li>
+	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12  alg2.html"><a href="/misc/" target="_self"><i class="fa fa-desktop"></i> Misc</a></li>
 
 </ul>
 
@@ -174,35 +174,126 @@
         <div class="col-md-9 col-xs-12 full">
           <div class="post-content well">
     <article class="content">
-        <div class="post"><p>本文主要分享一下，自己读研两年的关于密码学学习的一些思考和体会。（未完，格密码学篇）
+        <div class="post"><p>本文主要对排列组合问题进行总结，包括：排列组合的递归实现，排列组合问题的STL实现等。
 <!--more--></p>
-<h2 id="前言">前言</h2>
+<h1 id="排列组合问题">排列组合问题</h1>
 
-<p>我在第一篇写到过，secret sharing想发好的文章越来越难了，当时一度走了很多弯路，最后也没有很好想法。也逐渐意识到，这条路不太好走。
-研一的时候，自己无聊时，会经常看其他牛组的科研主页，看的最多的两个组，就是Stanford的Boneh组还有MIT的CSAIL组，你能在他们组看到他们的研究方向和成果，基本上我后来看的一大部分文章都和这两个组有直接或者间接的关系，也是从那时起开始接触了解到后量子密码学(Post-quantum cryptography)。</p>
+<ul>
+  <li>问题描述
+    <ul>
+      <li>排列：将n个元素进行全排列或者从n个元素中选出k个元素进行全排列</li>
+      <li>组合：从n个元素中选出k个元素</li>
+    </ul>
+  </li>
+</ul>
 
-<p>简而言之，现有的大数分解，离散对数，二次剩余难题等都有多项式时间内的量子算法去破解，所以当前密码学研究的一大热点就是寻找能够抵御量子算法的数学难题，并构造相应的密码系统。
-其中个人觉得目前最有前途的两个方向，一是lattice cryptography，二是isogeny cryptography。前者是我后来看文章的主体方向。后者，曾经去了解过，搞的那一套是椭圆曲线上各种模同态之类的，和之前密码学课上的椭圆曲线加解密算法完全不是一个概念，别说introduction了，abstract看的都费劲，而且这方面文章还不是很多，坑还很多，奈何自己数学功底太差，缺的代数知识太多，搞不懂。</p>
+<p>排列组合问题，我们可以将其解空间树画出来。画出来后，显而易见我们要不深度遍历，要不广度遍历。
+但是由于我们需要将到叶子节点的整条路径给输出，我们通常采用深度遍历的递归写法。
+因为广大遍历你需要在队列中添加额外的元素去保存，到当前节点的路径，会使得程序非常繁琐，所以大部分关于排列组合问题的写法，还是深度遍历的递归写法。</p>
 
-<h2 id="格密码">格密码</h2>
+<h2 id="递归实现">递归实现</h2>
 
-<p>这部分本来是想介绍一些格的基本理论的，后来想想这方面的survey这么多，还是不多费口舌了，另外讲清楚得敲很多公式，markdown实际显示效果也不如latex，就不费劲折腾了。下面大概说下，我的学习经历和过程，给后来人一个建议。</p>
+<h3 id="排列">排列</h3>
+<p>首先将解空间树给画出来，搞清楚什么时候递归到下一层，什么时候回溯，什么时候返回。</p>
 
-<h3 id="格密码基础">格密码基础</h3>
+<p>假定输入的n个元素不相等，以下是将n个元素进行全排列：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>// start:全排列数组开始位置， end：数组的末尾
+void perm(int start, int end, int a[]) {
+	if(start == end) {
+		for(int i=0;i&lt;end;++i) {
+			std::cout &lt;&lt; a[i] &lt;&lt; " ";
+		}
+		std::cout &lt;&lt; std::endl;
+		return;
+	} 
 
-<p>这一阶段，主要学习格的定义和一些基本知识，比如：格基约化，LLL算法，SVP难题，SIVP难题之类的。这部分我推荐两本书，一本是UTM系列中的An Introduction to Mathematical Cryptography，有一章节专门介绍Lattice的。写的通俗易通。另外一本书是Lattice-based Cryptography，作者是Daniele Micciancio和Oded Regev。你看早期2000-2010年间的格密码文章能经常看到这两人的身影。这本书我是跳着看的，没有全看完。</p>
+	for(int i=start;i&lt;end;++i) {
+		swap(a[start],a[i]);            
+		perm(start+1,end,a);            // 递归，+1表示下一层路径少一条，对start+1到end间元素进行全排列
+		swap(a[i],a[start]);            // 回溯
+	}
+}
+// e.g: a[5] = {1, 2, 3, 4, 5}; perm(0,5,a);
+</code></pre>
+</div>
+<h3 id="组合">组合</h3>
+<p>组合问题不同于排列问题，元素没有顺序。因此我们需要用一个标记数组去表示那些元素本访问过，按照选取顺序一步一步往下走。
+一旦访问的元素个数到达选取个数，输出并回溯到上一层。
+但注意，这里回溯到上一层需要保留当前访问元素的位置，这也是和排列问题的区别。</p>
 
-<h3 id="现代的格密码基础">现代的格密码基础</h3>
+<blockquote>
+  <p>注意：组合问题还有另外一种思路，就是将其转换成排列问题求解，具体见STL组合问题的实现。</p>
+</blockquote>
 
-<p>现今看到的大部分格密码相关的方案主要是依赖于Learning with Errors (LWE), Short Integer Solution (SIS)难题，后来有了环上推广的版本，Ring-LWE和Ring-SIS。这些难题的提出，主要是因为早期SVP,SIVP是worst case下难题，需要用额外的技巧，来提出新的难题，使得能从worst case规约到average case。这部分的工作主要集中在2000年到2008年间。主要的成果也是SIS和LWE的提出。关于其中的规约一直读的一直半解，实在惭愧。</p>
+<p>假定输入的n个元素不相等，以下是从n个元素中取出k个元素：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>//p:当前指向的数组位置，t是当前访问过元素的个数，k是选取元素的总数，n是元素总数，a是数组，v是标记数组
+void combin(int p, int t, int k, int n, int a[], bool v[]) {
+	if(t == k) {
+		for(int i=0;i&lt;n;++i) {
+			if(v[i] == true) {
+				std::cout &lt;&lt; a[i] &lt;&lt; " ";
+			}
+		}
+		std::cout &lt;&lt; std::endl;
+		return;
+	}
 
-<p>了解了基本概念后，强烈建议阅读Peikert的<a href="https://web.eecs.umich.edu/~cpeikert/pubs/lattice-survey.pdf">survey</a>,能节约你的大量时间去了解很多细枝末节的构造方案技巧，对现代的格密码方案有个初步的认识。期间除了看这边survey外，也看了很多关于lattice的报告ppt，有的时候看这些论文会太形式化，看这些ppt会比较简洁，有的时候还会有例子说明，能帮助理解。这篇survey花了我很长时间，尤其是到Ring-LWE和Ring-SIS时，我又去找了原论文阅读，恶补了一波代数知识,才勉强搞明白。但是，时至今日，On Ideal Lattices and Learning with error over rings_full version和On Lattices, Learning with Errors, Random Linear codes, and Cryptography这两篇文章里的，LWE规约和Ring-LWE规约还是看不懂。就大概不那么严谨的能明白为什么LWE和Ring-LWE是难的。</p>
+	if(p == n)	return;
 
-<p>此外，你如果认真去读这篇survey的话，就又会去看些复杂度理论，不可区分性的形式化定义，零知识的证明的一些arguments，甚至是安全两方计算和多方计算的一些基本概念和经典方案。总之这部分，是我觉得读这篇survey另一大收获。后来偶然在知乎上看到有人罗列了一个密码学书单，看完后深有体会。附上<a href="https://zhuanlan.zhihu.com/p/60604123">链接</a>.</p>
+	if(v[p] == false) {
+		v[p] = true;
+		combin(p+1, t+1, k, n, a, v);   // 递归，从a[p+1,n-1]中选取k-t-1个元素
+		v[p] = false;                   // 回溯
+	}
 
-<h2 id="全同态加密">全同态加密</h2>
+	combin(p+1, t, k, n, a, v);     // 递归，从a[p+1,n-1]中选取k-t个元素
+}
+// e.g:  a[5] = {1, 2, 3, 4, 5}; v[5] = {0, 0, 0, 0, 0};combin(0, 0, 3, 5, a, v);
+</code></pre>
+</div>
+<h2 id="stl实现">STL实现</h2>
 
-<p>这玩意真是又爱又恨。。。（待续）</p>
+<h3 id="排列-1">排列</h3>
+
+<p>假设n个元素不同，STL实现如下：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>void perm(std::vector&lt;int&gt; &amp;vec) {
+	std::copy(vec.begin(), vec.end(), std::ostream_iterator&lt;int&gt;(std::cout, " "));
+	std::cout &lt;&lt; std::endl;
+	while(next_permutation(vec.begin(), vec.end())) {
+		std::copy(vec.begin(), vec.end(), std::ostream_iterator&lt;int&gt;(std::cout, " "));
+		std::cout &lt;&lt; std::endl;
+	}
+	return;
+}
+// e.g.: int a[N] = {1,2,3,4,5}; std::vector&lt;int&gt; sel(v,v+5);perm(vec);
+</code></pre>
+</div>
+
+<h3 id="组合-1">组合</h3>
+<p>对于组合问题的另外一种思路就是将其转换成排列问题。STL的实现正是如此。例如：从n个元素中选取k个元素。我们可以用0-1标记数组代替，其中k个1，n-k个0。
+将这个标记数组全排列后，1对应下标的原数组序列即使组合的结果。</p>
+
+<p>假设n个元素不同，STL实现如下：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>void combin(std::vector&lt;int&gt; &amp;sel, int a[]) {
+	do{
+		for(int i=0;i&lt;sel.size();++i) {
+			if(sel[i] == 1) {
+				std::cout &lt;&lt; a[i] &lt;&lt; " ";
+			}
+		}
+		std::cout &lt;&lt; std::endl;
+	}while(prev_permutation(sel.begin(),sel.end()));
+}
+// e.g.: int a[N] = {1,2,3,4,5}; int v[N] = {1,1,1,0,0};std::vector&lt;int&gt; sel(v,v+5); combin(sel, a);
+</code></pre>
+</div>
+
+<h2 id="衍生的相关问题">衍生的相关问题</h2>
+
+<ul>
+  <li>目标求和<br />
+给定n个不同的数和一个目标值，是否存在k个数相加为目标值</li>
+</ul>
 </div>
         <hr />
     </article>
@@ -227,35 +318,35 @@
     
     
     
-            
-            
-            
-    
-    
-    
-    
-            
-            
-            
-    
-    
-    
-    
     
     <div class="panel-body">
         <h4>Related Posts</h4>
         <ul>
             
             <li class="relatedPost">
-                <a href="http://localhost:4000/cryptography/2019/07/26/somepoints.html">密码学学习总结（一）</a>
+                <a href="http://localhost:4000/algorithm/2019/08/10/alg1.html">计算字符串表达式</a>
                 
                 <small>(Categories: <a
-                        href="/category/cryptography">cryptography</a>)</small>
+                        href="/category/algorithm">algorithm</a>)</small>
                 
             </li>
             
             
             
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
             
             
             
@@ -273,10 +364,8 @@
 
     <!-- <div class="PageNavigation">
         
-        <a class="prev pull-left" href="http://localhost:4000/cryptography/2019/07/26/somepoints.html">&laquo; 密码学学习总结（一）</a>
+        <a class="prev pull-left" href="http://localhost:4000/%E6%9D%82%E9%A1%B9/2019/08/12/offer.html">&laquo; New repositories</a>
         
-        
-        <a class="next pull-right" href="http://localhost:4000/algorithm/2019/08/10/alg1.html">计算字符串表达式 &raquo;</a>
         
     </div> -->
 
@@ -287,8 +376,8 @@
             /* <![CDATA[ */
 
             var disqus_shortname = "";
-            var disqus_identifier = "http://localhost:4000_密码学学习总结（二）";
-            var disqus_title = "密码学学习总结（二）";
+            var disqus_identifier = "http://localhost:4000_排列组合";
+            var disqus_title = "排列组合";
 
             /* * * DON'T EDIT BELOW THIS LINE * * */
             (function () {
