@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="shortcut icon" href="/static/img/favicon.ico" />
+        <title>论文阅读：Pasta:Password-based Threshold Authentication - wffx</title>
+        <meta name="author" content="朔日" />
+        <meta name="description" content="论文阅读：Pasta:Password-based Threshold Authentication" />
+        <meta name="keywords" content="论文阅读：Pasta:Password-based Threshold Authentication, wffx, paper" />
+
+        <meta content="0" property="fb:app_id">
+        <meta content="wffx" property="og:site_name">
+        
+          <meta content="论文阅读：Pasta:Password-based Threshold Authentication" property="og:title">
+        
+        
+          <meta content="article" property="og:type">
+        
+        
+          <meta content="My Personal Blog" property="og:description">
+        
+        
+          <meta content="http://localhost:4000/paper/2019/08/29/pap1.html" property="og:url">
+        
+        
+          <meta content="2019-08-29T00:00:00+08:00" property="article:published_time">
+          <meta content="http://localhost:4000/about/" property="article:author">
+        
+        
+          <meta content="http://localhost:4000/static/img/logo-high-resolution.png" property="og:image">
+        
+        
+          
+          <meta content="paper" property="article:section">
+          
+        
+        
+          
+        
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@\#">
+        <meta name="twitter:creator" content="@\#">
+        
+          <meta name="twitter:title" content="论文阅读：Pasta:Password-based Threshold Authentication">
+        
+        
+          <meta name="twitter:url" content="http://localhost:4000/paper/2019/08/29/pap1.html">
+        
+        
+          <meta name="twitter:description" content="My Personal Blog">
+        
+        
+
+      <!-- <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml"> -->
+      <script type="text/javascript">window.baseurl = 'http://localhost:4000';</script>
+      
+        <!-- Custom Fonts -->
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+
+        <!-- FontAwesome icons -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/74dfc6cf47.css">
+
+        <!-- Core BootStrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <!-- Material Design CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap-material-design.min.css">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/static/css/syntax.css">
+
+        <!-- Custom CSS -->        
+        <link rel="stylesheet" href="/static/css/thickbox.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <link rel="stylesheet" href="/static/css/projects.css">
+
+        <script type="text/javascript">
+          //loadingImage is relative to project dir
+          var tb_pathToImage = "/static/img/loadingAnimation.gif";
+        </script>
+
+  </head>
+
+  <body class="home overflow-hidden">
+    <div class="header-panel shadow-z-2">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 col-sm-4 col-xs-12">
+            <div class="row-picture">
+              <img id="about" class="logo-img" src="/static/img/1.png" height="75px" width="75px">
+            </div>
+            <div class="row-details">
+              <h4 class="list-group-item-heading">朔日</h4>
+              <p class="list-group-item-text">积微言细, 自就鸿文</p>
+              <a  href="mailto: shuori2014@gmail.com" style="color:chartreuse">联系</a>
+            </div>
+            <div class="navbar-header pull-right">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <i class="fa fa-2x fa-bars"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-9 col-sm-8 col-xs-12">
+          <div class="row">
+            <h2 class="blog-title-pro ">论文阅读：Pasta:Password-based Threshold Authentication</h2>
+            
+            </div>
+            <p class="info">
+              
+                <span class="time">29 Aug 2019</span>
+              
+              
+                <span class="categories">
+                  &raquo; 
+                  
+                    <a href="/category/paper">paper</a>
+                    
+                  
+                </span>
+              
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container main outer">
+      <div class="row">
+        <div class="col-md-3 col-xs-12">
+              <nav class="menu">
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="list-separator nav navbar-nav well well-primary post">
+
+	
+	
+	
+	
+	
+	
+    
+	
+	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12 current-menu-item pap1.html"><a href="/" target="_self"><i class="fa fa-home"></i> Home</a></li>
+
+	
+	
+	
+	
+	
+	
+    
+	
+	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12  pap1.html"><a href="/about/" target="_self"><i class="fa fa-comments"></i> About</a></li>
+
+	
+	
+	
+	
+	
+	
+    
+	
+	<li class="col-lg-12 col-md-12 col-sm-4 col-xs-12  pap1.html"><a href="/misc/" target="_self"><i class="fa fa-desktop"></i> Misc</a></li>
+
+</ul>
+
+    </div>
+    </nav>
+
+        </div>
+        <div class="col-md-9 col-xs-12 full">
+          <div class="post-content well">
+    <article class="content">
+        <div class="post"><p>本文主要介绍论文，”Pasta:PASsword-based Threshold Authentication“，Acm CCS, 2018。
+<!--more--></p>
+<h1 id="论文阅读">论文阅读</h1>
+
+<p>想说点题外话，这段时间面试，曾被问到过这样的问题，你学的这个（我做的是应用密码学相关，偏理论）有具体的实际项目吗，秘密共享有什么用之类的问题。
+对于第一个问题，实话实说没有实际落地项目支撑，实验室项目偏科研性质（主发论文）。第二个问题，我当时回答的时候举了一个组认证的例子。
+说实话，目前大多数的安全岗招的都是传统的安全方向，比如：web安全，逆向，渗透，Android/IOS逆向等等。很少说，有招密码学相关开发的岗位，有的话也是极少极少。
+所以密码学相关的信息安全学生，找工作的时候就会有点尴尬。
+但是，其实还是有部分的搞密码学的会去做具体的工程实现。在安全顶会上你也能经常看到有关密码学实现相关的论文，比如：同态加密实现，安全多方计算实现之类的。
+还有一些文章，把一些密码学相关的东西结合一个具体的应用场景写成论文。故事说的好的话，也可以中除密码学外的安全顶会。
+今天说的这篇就是故事说的比较好的，文章也写的也非常规范，有严谨的安全性证明，也有具体的实现分析，佩服。感兴趣可以google找下这篇文，也有相关的报告视频。</p>
+
+<p>接下来，首先介绍论文解决的问题和目标。接着说下构造中用到的组件和实际的方案构造。最后，简单说下方案安全性，给出总结。</p>
+
+<h2 id="前言">前言</h2>
+
+<ul>
+  <li>背景介绍</li>
+</ul>
+
+<p>在web引用中，我们在登录系统中，会将自己的(username,Hash(passwd))发送给服务器，服务器收到client的登录请求会验证Hash(passwd)值。
+通过的话，服务器会发送一个Token值，相当于是给了用户权限去访问服务器上的资源，实际中就是保存在浏览器中的cookies。
+在每次get，post请求时，client都会将Token值发送给服务端。那么服务端收到请求会验证Token值的合法性，合法才能访问服务器上资源。</p>
+
+<p>在这个过程中，作者假设这样的情景。当服务器被cracked后，会带来以下后果。</p>
+<ul>
+  <li>攻击者可以伪造Token值，访问任意的账户</li>
+  <li>攻击者能够获取Hash(passwd)值。那么攻击者就能通过offline dictionary attack去破解passwd值。</li>
+</ul>
+
+<p>你可能会问，既然你都能渗透服务器了，还去破解hash值干嘛，直接拖库不就完了。我是这么猜的，可能像那种用户量特别大的公司，
+服务器肯定是分布式的，有很多个，攻击者可能只能攻破部分的服务器，而那部分的服务器并没有对数据库上的所有数据都有访问权限。
+比如：有专门的服务器是负责用户认证的，那么负责用户认证的服务器就没有权限去访问除用户认证相关外的其他的资源。</p>
+
+<p>作者在报告中，还描绘多种应用场景，其中一个例子，Josn Web Token。在你访问gmail的时候，首先会去google的服务器上获取Token值，然后在通过授权的Token值，访问你的邮箱。
+这里如果google的服务器被cracked掉后，一方面攻击者可以伪造Token值访问任意账户，另外一方面可以获取passwd的hash值。
+进而，假如google返回的Token值还能访问你的其他google服务资源，比如：chrome,youtube,google paly等等，那将会变得更糟糕。</p>
+
+<ul>
+  <li>目标</li>
+</ul>
+
+<p>设计门限认证协议，当&lt; t个服务器被攻破时，仍然能够保证Token和passwd的安全性（against offline dictionary attack）。
+使得t-out-of-n个服务器响应，才能恢复出Token值。相当于每个服务器只会响应一个局部的Token值，需要收齐t个局部Token值才能恢复出真正的Token值。
+任意t-1个服务器不能够恢复出passwd值（by offline token）或者伪造Token值。这就大大增加了系统容错性。</p>
+
+<h2 id="方案构造">方案构造</h2>
+
+<p>文章中提了没优化时的结果，并给出了优化方案。为了可读性，直接介绍最终版本的构造方案。方案的构造依赖于一些组件，
+包括：NITTG(Non-Interactive Threshold Token Generation)，TOPRF(Threshold Oblivious Pseudorandom Function)。以下将分边介绍组件，再介绍方案构造。</p>
+
+<h3 id="nittg">NITTG</h3>
+
+<p><img src="/assets/img/pap1/2019-08-29-22-55-58.png" alt="NITTG" />
+在论文中，是这么被形式化定义的：</p>
+<ul>
+  <li>$Setup(1^{\lambda},n,t) \rightarrow ([sk],vk,pp)$
+    <ul>
+      <li>$[sk] \leftarrow sk$，其中$[sk]$是$sk$生成的share集合$\{sk_1, …, sk_n\}$</li>
+      <li>$vk$：用于验证sk合法性</li>
+      <li>$pp$：额外用到的一些public参数</li>
+    </ul>
+  </li>
+  <li>$PartEval(sk_i, x) \rightarrow y_i$
+    <ul>
+      <li>$x \in \mathcal{X}$</li>
+    </ul>
+  </li>
+  <li>$Combine(i,y_i)_{i \in S} \rightarrow tk$
+    <ul>
+      <li>输入t个$y_i$，通过秘密共享恢复出tk，其中tk即为tk值</li>
+    </ul>
+  </li>
+  <li>$Verfiy(tk,x,vk)$
+    <ul>
+      <li>验证tk的合法性</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="toprf">TOPRF</h3>
+
+<p>可以翻译成门限不经意的伪随机生成函数，$PRF: (\mathcal{X},\mathcal{R}) \rightarrow \mathcal{R}$ <br />
+<img src="/assets/img/pap1/2019-08-31-20-28-41.png" alt="TOPRF" />
+以下为其构造：</p>
+<ul>
+  <li>$Setup(1^{\lambda}, n, t) \rightarrow ([sk], pp)$
+    <ul>
+      <li>$[sk] \leftarrow sk$，其中$[sk]$是sk生成的share集合$\{sk_1, …, sk_n\}$</li>
+      <li>$pp = (p, g, \mathbb{G}, n, t, \mathcal{H}_1, \mathcal{H}_2)$：额外用到的一些public参数</li>
+      <li>$\mathcal{H}_1: \mathcal{X} \times \mathbb{G} \rightarrow \{0,1\}^{\mathcal{K}}$，hash函数</li>
+      <li>$\mathcal{H}_2: \mathcal{X} \rightarrow \mathbb{G}$，hash函数</li>
+    </ul>
+  </li>
+  <li>$Encode(x, \rho) := c$
+    <ul>
+      <li>$\rho \leftarrow \mathcal{R}$,从$\mathcal{R}$中随机取样的随机值</li>
+      <li>$x \in \mathcal{X}$</li>
+      <li>$c = \mathcal{H}_2(x)^{\rho}$</li>
+    </ul>
+  </li>
+  <li>$Eval(sk_i, c) := z_i$
+    <ul>
+      <li>$z_i = c^{sk_i}$</li>
+    </ul>
+  </li>
+  <li>$Combine(x, \{i,z_i\}_{i \in S}, \rho)$
+    <ul>
+      <li>通过t个局部计算值$z_i$恢复出$z$，$z = \prod_{i \in S}z_i^{\lambda_{i}}$</li>
+      <li>输出$\mathcal{H}_1(x, z^{\rho^{-1}})$</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>注意：NITTG和TOPRF中的sk是不同的key值</p>
+</blockquote>
+
+<p>图片是作者报告ppt截图，其中$k$可以理解成上述中的$sk$,$y$可以理解成上述构造中的$\mathcal{H}_1(x, z^{\rho^{-1}})$。</p>
+
+<h3 id="方案构造-1">方案构造</h3>
+
+<p>包括组件：NITTG，TOPRF，Symmetric-key Encryption, Hash functtion</p>
+
+<ul>
+  <li>$GlobalSetup(1^{\lambda}, n, t, P) \rightarrow ([sk],vk,pp)$
+    <ul>
+      <li>Run NITTG，$NITTG.Setup(1^{\mathcal{K}},n,t) \rightarrow ([tsk], tvk, tpp)$</li>
+      <li>$sk_i = tsk_i, i\in [n]=\{1, \cdots, n\}$, $vk := tvk$ and $pp := (\mathcal{K}, n, t, P, tpp)$</li>
+    </ul>
+  </li>
+  <li>$SignUp(C, pwd) \leftarrow ((C, msg_1), \cdots, (C, msg_n))$
+    <ul>
+      <li>Run TOPRF, $TOPRF.Setup(1^{\mathcal{K}}, n, t) \rightarrow ([k], opp)$</li>
+      <li>Compute $h = TOPRF(k, pwd)$ and $h_i = \mathcal{H}(h \| i), i \in [n]=\{1, \cdots, n\}$</li>
+      <li>$msg_i = (k_i, h_i)$</li>
+    </ul>
+  </li>
+  <li>$Store(sk_i, C, msg_i) = rec_{i,C}$
+    <ul>
+      <li>$rec_{i,C} = (k_i, h_i)$</li>
+    </ul>
+  </li>
+  <li>$Request(C, pwd, x, \mathcal{T}) \rightarrow ({(C,x,req_i)}_{i\in \mathcal{T}}, st)$
+    <ul>
+      <li>Run $TOPRF.Encode(pwd, \rho) = c$ where $\rho \leftarrow \mathbb{G}$</li>
+      <li>$req_i := c$ and $st := (C, pwd, \rho, \mathcal{T})$</li>
+    </ul>
+  </li>
+  <li>$Respond(sk_i, REC_i, C, x, req_i) \leftarrow res_i$
+    <ul>
+      <li>If $rec_{i,C} \notin REC_i$, output $\perp$. Else parse $rec_{i,C}$ as $(k_i, h_i)$</li>
+      <li>Run $TOPRF.Eval(k_i, req_i) \leftarrow z_i$</li>
+      <li>Run $NITTG.PartEval(sk_i, C\|x) \leftarrow y_i$</li>
+      <li>$res_i := (z_i, SKE.Encrypt(h_i, y_i))$</li>
+    </ul>
+  </li>
+  <li>$Finalize(st, \{res_i\}_{i\in S}) \leftarrow tk$
+    <ul>
+      <li>Parse $res_{i}$ as $\left(z_{i}, \text { ctxt }_{i}\right)$ and $st$ as $(C, p w d, \rho, \mathcal{T})$</li>
+      <li>Run $TOPRF.Combine(pwd, {(i, z_i)}_{i\in \mathcal{T}}, \rho) \leftarrow h$</li>
+      <li>Compute $h_i := \mathcal{H}(h \| i)$ and $y_i := SKE.Decrypt(h_i, ctxt_i)$</li>
+      <li>Set $tk = NITTG.Combine({i,y_i}_{i\in \mathcal{T}})$</li>
+    </ul>
+  </li>
+  <li>$Verfiy(vk, C, x, tk) \leftarrow \{0, 1\}$
+    <ul>
+      <li>Output $NITTG.Verify(tvk, C\|x, tk)$</li>
+    </ul>
+  </li>
+</ul>
+
+<p>按照我的理解GlobalSetup和SignUp，是比n个authentication server更高一级Manage server做的事情。因为在SignUp的第二个步骤中，需要执行$h = TOPRF(k, pwd)$
+而我们的$k$值，不可能保存在每个authentication server中。Store是分别由n个authentication server分别完成。
+接下来，用户登录的流程是这样，Client发送Request给每个Serve，每个Serve返回Respond给Client。
+Client执行Finalize获得Token值tk，并在接下来的每次获取资源时，Server执行Verify，验证Client身份。</p>
+
+<h2 id="总结">总结</h2>
+<p>以下是安全性的Theorem，Security Theorem：<br />
+If NITTG satisfies the unforgeability property, TOPRF satisfies the unpredictability, SKE satisfies the CPA-secure property,
+then Pasta scheme satisfies the passwd-safe and unforgeability property under a random oracle.</p>
+
+<p>总的来说，文章的具体实现的原理还是比较简单的。出彩的地方在于，问题的提炼（讲故事的能力）。再加上写法比较规范，有具体的实现效率的分析，也有相关安全性的证明，能中顶会，实至名归。</p>
+
+<p>最后说下自己的个人看法，其实像这篇文章这样，比较偏应用的，平时看的比较少，看的多的还是偏理论的文章。像这篇文章中提到的这种问题和应用场景，其实只有用户量特别大的公司才需要去考虑。
+所以用户量越大，场景越复杂，才会出现各类的安全问题，这时候可能才需要一些密码学的知识去构建解决发案，也算是做密码学去工业界的一个出路。</p>
+
+<script type="text/javascript" async="" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']]
+        }
+    });
+</script>
+
+</div>
+        <hr />
+    </article>
+    <hr />
+    
+    
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+    
+    
+    
+    
+            
+            
+            
+            
+
+    <!-- <div class="PageNavigation">
+        
+        <a class="prev pull-left" href="http://localhost:4000/algorithm/2019/08/24/alg2.html">&laquo; 排列组合</a>
+        
+        
+    </div> -->
+
+
+    <!-- <div class="disqus-comments">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* <![CDATA[ */
+
+            var disqus_shortname = "";
+            var disqus_identifier = "http://localhost:4000_论文阅读：Pasta:Password-based Threshold Authentication";
+            var disqus_title = "论文阅读：Pasta:Password-based Threshold Authentication";
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+    /* ]]> */
+        </script>
+    </div> -->
+</div>
+          <div class="row">
+            <div class="col-md-12 col-xs-12 footer">
+              <footer>
+  © 2019 wffx <a href="#">Privacy link</a> - Powered by Jekyll.
+</footer>
+<!-- <div align="center">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-0000000000000000"
+    data-ad-slot="0000000000"
+    data-ad-format="auto"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div> -->
+
+            </div>
+          </div>
+        </div> <!-- end /.col-md-9 -->
+      </div> <!-- end /.row -->
+    </div>
+
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<script src="/static/js/thickbox-compressed.js"></script>
+<script src="/static/js/material.min.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/projects.js"></script>
+
+    <!-- <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '', 'auto');
+  ga('send', 'pageview');
+
+</script> -->
+  </body>
+</html>

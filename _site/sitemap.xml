@@ -5,9 +5,216 @@
     <description>My Personal Blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/sitemap.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 25 Aug 2019 21:50:26 +0800</pubDate>
-    <lastBuildDate>Sun, 25 Aug 2019 21:50:26 +0800</lastBuildDate>
+    <pubDate>Sun, 01 Sep 2019 11:01:39 +0800</pubDate>
+    <lastBuildDate>Sun, 01 Sep 2019 11:01:39 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>论文阅读：Pasta:Password-based Threshold Authentication</title>
+        <description>&lt;p&gt;本文主要介绍论文，”Pasta:PASsword-based Threshold Authentication“，Acm CCS, 2018。
+&lt;!--more--&gt;&lt;/p&gt;
+&lt;h1 id=&quot;论文阅读&quot;&gt;论文阅读&lt;/h1&gt;
+
+&lt;p&gt;想说点题外话，这段时间面试，曾被问到过这样的问题，你学的这个（我做的是应用密码学相关，偏理论）有具体的实际项目吗，秘密共享有什么用之类的问题。
+对于第一个问题，实话实说没有实际落地项目支撑，实验室项目偏科研性质（主发论文）。第二个问题，我当时回答的时候举了一个组认证的例子。
+说实话，目前大多数的安全岗招的都是传统的安全方向，比如：web安全，逆向，渗透，Android/IOS逆向等等。很少说，有招密码学相关开发的岗位，有的话也是极少极少。
+所以密码学相关的信息安全学生，找工作的时候就会有点尴尬。
+但是，其实还是有部分的搞密码学的会去做具体的工程实现。在安全顶会上你也能经常看到有关密码学实现相关的论文，比如：同态加密实现，安全多方计算实现之类的。
+还有一些文章，把一些密码学相关的东西结合一个具体的应用场景写成论文。故事说的好的话，也可以中除密码学外的安全顶会。
+今天说的这篇就是故事说的比较好的，文章也写的也非常规范，有严谨的安全性证明，也有具体的实现分析，佩服。感兴趣可以google找下这篇文，也有相关的报告视频。&lt;/p&gt;
+
+&lt;p&gt;接下来，首先介绍论文解决的问题和目标。接着说下构造中用到的组件和实际的方案构造。最后，简单说下方案安全性，给出总结。&lt;/p&gt;
+
+&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;背景介绍&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在web引用中，我们在登录系统中，会将自己的(username,Hash(passwd))发送给服务器，服务器收到client的登录请求会验证Hash(passwd)值。
+通过的话，服务器会发送一个Token值，相当于是给了用户权限去访问服务器上的资源，实际中就是保存在浏览器中的cookies。
+在每次get，post请求时，client都会将Token值发送给服务端。那么服务端收到请求会验证Token值的合法性，合法才能访问服务器上资源。&lt;/p&gt;
+
+&lt;p&gt;在这个过程中，作者假设这样的情景。当服务器被cracked后，会带来以下后果。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;攻击者可以伪造Token值，访问任意的账户&lt;/li&gt;
+  &lt;li&gt;攻击者能够获取Hash(passwd)值。那么攻击者就能通过offline dictionary attack去破解passwd值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;你可能会问，既然你都能渗透服务器了，还去破解hash值干嘛，直接拖库不就完了。我是这么猜的，可能像那种用户量特别大的公司，
+服务器肯定是分布式的，有很多个，攻击者可能只能攻破部分的服务器，而那部分的服务器并没有对数据库上的所有数据都有访问权限。
+比如：有专门的服务器是负责用户认证的，那么负责用户认证的服务器就没有权限去访问除用户认证相关外的其他的资源。&lt;/p&gt;
+
+&lt;p&gt;作者在报告中，还描绘多种应用场景，其中一个例子，Josn Web Token。在你访问gmail的时候，首先会去google的服务器上获取Token值，然后在通过授权的Token值，访问你的邮箱。
+这里如果google的服务器被cracked掉后，一方面攻击者可以伪造Token值访问任意账户，另外一方面可以获取passwd的hash值。
+进而，假如google返回的Token值还能访问你的其他google服务资源，比如：chrome,youtube,google paly等等，那将会变得更糟糕。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目标&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;设计门限认证协议，当&amp;lt; t个服务器被攻破时，仍然能够保证Token和passwd的安全性（against offline dictionary attack）。
+使得t-out-of-n个服务器响应，才能恢复出Token值。相当于每个服务器只会响应一个局部的Token值，需要收齐t个局部Token值才能恢复出真正的Token值。
+任意t-1个服务器不能够恢复出passwd值（by offline token）或者伪造Token值。这就大大增加了系统容错性。&lt;/p&gt;
+
+&lt;h2 id=&quot;方案构造&quot;&gt;方案构造&lt;/h2&gt;
+
+&lt;p&gt;文章中提了没优化时的结果，并给出了优化方案。为了可读性，直接介绍最终版本的构造方案。方案的构造依赖于一些组件，
+包括：NITTG(Non-Interactive Threshold Token Generation)，TOPRF(Threshold Oblivious Pseudorandom Function)。以下将分边介绍组件，再介绍方案构造。&lt;/p&gt;
+
+&lt;h3 id=&quot;nittg&quot;&gt;NITTG&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/pap1/2019-08-29-22-55-58.png&quot; alt=&quot;NITTG&quot; /&gt;
+在论文中，是这么被形式化定义的：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;$Setup(1^{\lambda},n,t) \rightarrow ([sk],vk,pp)$
+    &lt;ul&gt;
+      &lt;li&gt;$[sk] \leftarrow sk$，其中$[sk]$是$sk$生成的share集合$\{sk_1, …, sk_n\}$&lt;/li&gt;
+      &lt;li&gt;$vk$：用于验证sk合法性&lt;/li&gt;
+      &lt;li&gt;$pp$：额外用到的一些public参数&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$PartEval(sk_i, x) \rightarrow y_i$
+    &lt;ul&gt;
+      &lt;li&gt;$x \in \mathcal{X}$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Combine(i,y_i)_{i \in S} \rightarrow tk$
+    &lt;ul&gt;
+      &lt;li&gt;输入t个$y_i$，通过秘密共享恢复出tk，其中tk即为tk值&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Verfiy(tk,x,vk)$
+    &lt;ul&gt;
+      &lt;li&gt;验证tk的合法性&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;toprf&quot;&gt;TOPRF&lt;/h3&gt;
+
+&lt;p&gt;可以翻译成门限不经意的伪随机生成函数，$PRF: (\mathcal{X},\mathcal{R}) \rightarrow \mathcal{R}$ &lt;br /&gt;
+&lt;img src=&quot;/assets/img/pap1/2019-08-31-20-28-41.png&quot; alt=&quot;TOPRF&quot; /&gt;
+以下为其构造：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;$Setup(1^{\lambda}, n, t) \rightarrow ([sk], pp)$
+    &lt;ul&gt;
+      &lt;li&gt;$[sk] \leftarrow sk$，其中$[sk]$是sk生成的share集合$\{sk_1, …, sk_n\}$&lt;/li&gt;
+      &lt;li&gt;$pp = (p, g, \mathbb{G}, n, t, \mathcal{H}_1, \mathcal{H}_2)$：额外用到的一些public参数&lt;/li&gt;
+      &lt;li&gt;$\mathcal{H}_1: \mathcal{X} \times \mathbb{G} \rightarrow \{0,1\}^{\mathcal{K}}$，hash函数&lt;/li&gt;
+      &lt;li&gt;$\mathcal{H}_2: \mathcal{X} \rightarrow \mathbb{G}$，hash函数&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Encode(x, \rho) := c$
+    &lt;ul&gt;
+      &lt;li&gt;$\rho \leftarrow \mathcal{R}$,从$\mathcal{R}$中随机取样的随机值&lt;/li&gt;
+      &lt;li&gt;$x \in \mathcal{X}$&lt;/li&gt;
+      &lt;li&gt;$c = \mathcal{H}_2(x)^{\rho}$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Eval(sk_i, c) := z_i$
+    &lt;ul&gt;
+      &lt;li&gt;$z_i = c^{sk_i}$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Combine(x, \{i,z_i\}_{i \in S}, \rho)$
+    &lt;ul&gt;
+      &lt;li&gt;通过t个局部计算值$z_i$恢复出$z$，$z = \prod_{i \in S}z_i^{\lambda_{i}}$&lt;/li&gt;
+      &lt;li&gt;输出$\mathcal{H}_1(x, z^{\rho^{-1}})$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意：NITTG和TOPRF中的sk是不同的key值&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;图片是作者报告ppt截图，其中$k$可以理解成上述中的$sk$,$y$可以理解成上述构造中的$\mathcal{H}_1(x, z^{\rho^{-1}})$。&lt;/p&gt;
+
+&lt;h3 id=&quot;方案构造-1&quot;&gt;方案构造&lt;/h3&gt;
+
+&lt;p&gt;包括组件：NITTG，TOPRF，Symmetric-key Encryption, Hash functtion&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$GlobalSetup(1^{\lambda}, n, t, P) \rightarrow ([sk],vk,pp)$
+    &lt;ul&gt;
+      &lt;li&gt;Run NITTG，$NITTG.Setup(1^{\mathcal{K}},n,t) \rightarrow ([tsk], tvk, tpp)$&lt;/li&gt;
+      &lt;li&gt;$sk_i = tsk_i, i\in [n]=\{1, \cdots, n\}$, $vk := tvk$ and $pp := (\mathcal{K}, n, t, P, tpp)$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$SignUp(C, pwd) \leftarrow ((C, msg_1), \cdots, (C, msg_n))$
+    &lt;ul&gt;
+      &lt;li&gt;Run TOPRF, $TOPRF.Setup(1^{\mathcal{K}}, n, t) \rightarrow ([k], opp)$&lt;/li&gt;
+      &lt;li&gt;Compute $h = TOPRF(k, pwd)$ and $h_i = \mathcal{H}(h \| i), i \in [n]=\{1, \cdots, n\}$&lt;/li&gt;
+      &lt;li&gt;$msg_i = (k_i, h_i)$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Store(sk_i, C, msg_i) = rec_{i,C}$
+    &lt;ul&gt;
+      &lt;li&gt;$rec_{i,C} = (k_i, h_i)$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Request(C, pwd, x, \mathcal{T}) \rightarrow ({(C,x,req_i)}_{i\in \mathcal{T}}, st)$
+    &lt;ul&gt;
+      &lt;li&gt;Run $TOPRF.Encode(pwd, \rho) = c$ where $\rho \leftarrow \mathbb{G}$&lt;/li&gt;
+      &lt;li&gt;$req_i := c$ and $st := (C, pwd, \rho, \mathcal{T})$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Respond(sk_i, REC_i, C, x, req_i) \leftarrow res_i$
+    &lt;ul&gt;
+      &lt;li&gt;If $rec_{i,C} \notin REC_i$, output $\perp$. Else parse $rec_{i,C}$ as $(k_i, h_i)$&lt;/li&gt;
+      &lt;li&gt;Run $TOPRF.Eval(k_i, req_i) \leftarrow z_i$&lt;/li&gt;
+      &lt;li&gt;Run $NITTG.PartEval(sk_i, C\|x) \leftarrow y_i$&lt;/li&gt;
+      &lt;li&gt;$res_i := (z_i, SKE.Encrypt(h_i, y_i))$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Finalize(st, \{res_i\}_{i\in S}) \leftarrow tk$
+    &lt;ul&gt;
+      &lt;li&gt;Parse $res_{i}$ as $\left(z_{i}, \text { ctxt }_{i}\right)$ and $st$ as $(C, p w d, \rho, \mathcal{T})$&lt;/li&gt;
+      &lt;li&gt;Run $TOPRF.Combine(pwd, {(i, z_i)}_{i\in \mathcal{T}}, \rho) \leftarrow h$&lt;/li&gt;
+      &lt;li&gt;Compute $h_i := \mathcal{H}(h \| i)$ and $y_i := SKE.Decrypt(h_i, ctxt_i)$&lt;/li&gt;
+      &lt;li&gt;Set $tk = NITTG.Combine({i,y_i}_{i\in \mathcal{T}})$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;$Verfiy(vk, C, x, tk) \leftarrow \{0, 1\}$
+    &lt;ul&gt;
+      &lt;li&gt;Output $NITTG.Verify(tvk, C\|x, tk)$&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;按照我的理解GlobalSetup和SignUp，是比n个authentication server更高一级Manage server做的事情。因为在SignUp的第二个步骤中，需要执行$h = TOPRF(k, pwd)$
+而我们的$k$值，不可能保存在每个authentication server中。Store是分别由n个authentication server分别完成。
+接下来，用户登录的流程是这样，Client发送Request给每个Serve，每个Serve返回Respond给Client。
+Client执行Finalize获得Token值tk，并在接下来的每次获取资源时，Server执行Verify，验证Client身份。&lt;/p&gt;
+
+&lt;h2 id=&quot;总结&quot;&gt;总结&lt;/h2&gt;
+&lt;p&gt;以下是安全性的Theorem，Security Theorem：&lt;br /&gt;
+If NITTG satisfies the unforgeability property, TOPRF satisfies the unpredictability, SKE satisfies the CPA-secure property,
+then Pasta scheme satisfies the passwd-safe and unforgeability property under a random oracle.&lt;/p&gt;
+
+&lt;p&gt;总的来说，文章的具体实现的原理还是比较简单的。出彩的地方在于，问题的提炼（讲故事的能力）。再加上写法比较规范，有具体的实现效率的分析，也有相关安全性的证明，能中顶会，实至名归。&lt;/p&gt;
+
+&lt;p&gt;最后说下自己的个人看法，其实像这篇文章这样，比较偏应用的，平时看的比较少，看的多的还是偏理论的文章。像这篇文章中提到的这种问题和应用场景，其实只有用户量特别大的公司才需要去考虑。
+所以用户量越大，场景越复杂，才会出现各类的安全问题，这时候可能才需要一些密码学的知识去构建解决发案，也算是做密码学去工业界的一个出路。&lt;/p&gt;
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']]
+        }
+    });
+&lt;/script&gt;
+
+</description>
+        <pubDate>Thu, 29 Aug 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/paper/2019/08/29/pap1.html</link>
+        <guid isPermaLink="true">http://localhost:4000/paper/2019/08/29/pap1.html</guid>
+        
+        
+        <category>paper</category>
+        
+      </item>
     
       <item>
         <title>排列组合</title>
