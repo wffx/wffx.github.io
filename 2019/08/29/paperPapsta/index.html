@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文主要介绍论文，”Pasta:PASsword-based Threshold Authentication“，Acm CCS, 2018。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文阅读：Pasta:Password-based Threshold Authentication">
+<meta property="og:url" content="http://example.com/2019/08/29/paperPapsta/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="本文主要介绍论文，”Pasta:PASsword-based Threshold Authentication“，Acm CCS, 2018。">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/assets/img/pap1/2019-08-29-22-55-58.png">
+<meta property="og:image" content="http://example.com/assets/img/pap1/2019-08-31-20-28-41.png">
+<meta property="article:published_time" content="2019-08-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-01T12:42:49.641Z">
+<meta property="article:author" content="wffx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/img/pap1/2019-08-29-22-55-58.png">
+
+<link rel="canonical" href="http://example.com/2019/08/29/paperPapsta/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>论文阅读：Pasta:Password-based Threshold Authentication | My Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">My Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/29/paperPapsta/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wffx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文阅读：Pasta:Password-based Threshold Authentication
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2019-08-29T00:00:00+08:00">2019-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-03-01 20:42:49" itemprop="dateModified" datetime="2021-03-01T20:42:49+08:00">2021-03-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/paper/" itemprop="url" rel="index"><span itemprop="name">paper</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要介绍论文，”Pasta:PASsword-based Threshold Authentication“，Acm CCS, 2018。</p>
+<span id="more"></span>
+<h1 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h1><p>想说点题外话，这段时间面试，曾被问到过这样的问题，你学的这个（我做的是应用密码学相关，偏理论）有具体的实际项目吗，秘密共享有什么用之类的问题。<br>对于第一个问题，实话实说没有实际落地项目支撑，实验室项目偏科研性质（主发论文）。第二个问题，我当时回答的时候举了一个组认证的例子。<br>说实话，目前大多数的安全岗招的都是工程应用相关的安全方向，比如：web安全，逆向，渗透，Android/IOS逆向等等。</p>
+<p>但是，其实还是有部分的搞密码学的会去做具体的工程实现。在安全顶会上你也能经常看到有关密码学实现相关的论文，比如：同态加密实现，安全多方计算实现之类的。<br>还有一些文章，把一些密码学相关的东西结合一个具体的应用场景写成论文。故事说的好的话，也可以中除密码学外的安全顶会。<br>今天说的这篇就是故事说的比较好的，文章也写的也非常规范，有严谨的安全性证明，也有具体的实现分析，佩服。感兴趣可以google找下这篇文，也有相关的报告视频。</p>
+<p>接下来，首先介绍论文解决的问题和目标。接着说下构造中用到的组件和实际的方案构造。最后，简单说下方案安全性，给出总结。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>背景介绍</li>
+</ul>
+<p>在web引用中，我们在登录系统中，会将自己的(username,Hash(passwd))发送给服务器，服务器收到client的登录请求会验证Hash(passwd)值。<br>通过的话，服务器会发送一个Token值，相当于是给了用户权限去访问服务器上的资源，实际中就是保存在浏览器中的cookies。<br>在每次get，post请求时，client都会将Token值发送给服务端。那么服务端收到请求会验证Token值的合法性，合法才能访问服务器上资源。</p>
+<p>在这个过程中，作者假设这样的情景。当服务器被cracked后，会带来以下后果。</p>
+<ul>
+<li>攻击者可以伪造Token值，访问任意的账户</li>
+<li>攻击者能够获取Hash(passwd)值。那么攻击者就能通过offline dictionary attack去破解passwd值。</li>
+</ul>
+<p>你可能会问，既然你都能渗透服务器了，还去破解hash值干嘛，直接拖库不就完了。我是这么猜的，可能像那种用户量特别大的公司，<br>服务器肯定是分布式的，有很多个，攻击者可能只能攻破部分的服务器，而那部分的服务器并没有对数据库上的所有数据都有访问权限。<br>比如：有专门的服务器是负责用户认证的，那么负责用户认证的服务器就没有权限去访问除用户认证相关外的其他的资源。</p>
+<p>作者在报告中，还描绘多种应用场景，其中一个例子，Josn Web Token。在你访问gmail的时候，首先会去google的服务器上获取Token值，然后在通过授权的Token值，访问你的邮箱。<br>这里如果google的服务器被cracked掉后，一方面攻击者可以伪造Token值访问任意账户，另外一方面可以获取passwd的hash值。<br>进而，假如google返回的Token值还能访问你的其他google服务资源，比如：chrome,youtube,google paly等等，那将会变得更糟糕。</p>
+<ul>
+<li>目标</li>
+</ul>
+<p>设计门限认证协议，当&lt; t个服务器被攻破时，仍然能够保证Token和passwd的安全性（against offline dictionary attack）。<br>使得t-out-of-n个服务器响应，才能恢复出Token值。相当于每个服务器只会响应一个局部的Token值，需要收齐t个局部Token值才能恢复出真正的Token值。<br>任意t-1个服务器不能够恢复出passwd值（by offline token）或者伪造Token值。这就大大增加了系统容错性。</p>
+<h2 id="方案构造"><a href="#方案构造" class="headerlink" title="方案构造"></a>方案构造</h2><p>文章中提了没优化时的结果，并给出了优化方案。为了可读性，直接介绍最终版本的构造方案。方案的构造依赖于一些组件，<br>包括：NITTG(Non-Interactive Threshold Token Generation)，TOPRF(Threshold Oblivious Pseudorandom Function)。以下将分边介绍组件，再介绍方案构造。</p>
+<h3 id="NITTG"><a href="#NITTG" class="headerlink" title="NITTG"></a>NITTG</h3><p><img src="/assets/img/pap1/2019-08-29-22-55-58.png" alt="NITTG"><br>在论文中，是这么被形式化定义的：</p>
+<ul>
+<li>$Setup(1^{\lambda},n,t) \rightarrow ([sk],vk,pp)$<ul>
+<li>$[sk] \leftarrow sk$，其中$[sk]$是$sk$生成的share集合$\{sk_1, …, sk_n\}$</li>
+<li>$vk$：用于验证sk合法性</li>
+<li>$pp$：额外用到的一些public参数</li>
+</ul>
+</li>
+<li>$PartEval(sk_i, x) \rightarrow y_i$ <ul>
+<li>$x \in \mathcal{X}$</li>
+</ul>
+</li>
+<li>$Combine(i,y_i)_{i \in S} \rightarrow tk$<ul>
+<li>输入t个$y_i$，通过秘密共享恢复出tk，其中tk即为tk值</li>
+</ul>
+</li>
+<li>$Verfiy(tk,x,vk)$<ul>
+<li>验证tk的合法性</li>
+</ul>
+</li>
+</ul>
+<h3 id="TOPRF"><a href="#TOPRF" class="headerlink" title="TOPRF"></a>TOPRF</h3><p>可以翻译成门限不经意的伪随机生成函数，$PRF: (\mathcal{X},\mathcal{R}) \rightarrow \mathcal{R}$<br><img src="/assets/img/pap1/2019-08-31-20-28-41.png" alt="TOPRF"><br>以下为其构造：</p>
+<ul>
+<li>$Setup(1^{\lambda}, n, t) \rightarrow ([sk], pp)$<ul>
+<li>$[sk] \leftarrow sk$，其中$[sk]$是sk生成的share集合$\{sk_1, …, sk_n\}$</li>
+<li>$pp = (p, g, \mathbb{G}, n, t, \mathcal{H}_1, \mathcal{H}_2)$：额外用到的一些public参数</li>
+<li>$\mathcal{H}_1: \mathcal{X} \times \mathbb{G} \rightarrow \{0,1\}^{\mathcal{K}}$，hash函数</li>
+<li>$\mathcal{H}_2: \mathcal{X} \rightarrow \mathbb{G}$，hash函数</li>
+</ul>
+</li>
+<li>$Encode(x, \rho) := c$<ul>
+<li>$\rho \leftarrow \mathcal{R}$,从$\mathcal{R}$中随机取样的随机值</li>
+<li>$x \in \mathcal{X}$</li>
+<li>$c = \mathcal{H}_2(x)^{\rho}$</li>
+</ul>
+</li>
+<li>$Eval(sk_i, c) := z_i$<ul>
+<li>$z_i = c^{sk_i}$</li>
+</ul>
+</li>
+<li>$Combine(x, \{i,z_i\}_{i \in S}, \rho)$<ul>
+<li>通过t个局部计算值$z_i$恢复出$z$，$z = \prod_{i \in S}z_i^{\lambda_{i}}$</li>
+<li>输出$\mathcal{H}_1(x, z^{\rho^{-1}})$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意：NITTG和TOPRF中的sk是不同的key值</p>
+</blockquote>
+<p>图片是作者报告ppt截图，其中$k$可以理解成上述中的$sk$,$y$可以理解成上述构造中的$\mathcal{H}_1(x, z^{\rho^{-1}})$。</p>
+<h3 id="方案构造-1"><a href="#方案构造-1" class="headerlink" title="方案构造"></a>方案构造</h3><p>包括组件：NITTG，TOPRF，Symmetric-key Encryption, Hash functtion</p>
+<ul>
+<li>$GlobalSetup(1^{\lambda}, n, t, P) \rightarrow ([sk],vk,pp)$<ul>
+<li>Run NITTG，$NITTG.Setup(1^{\mathcal{K}},n,t) \rightarrow ([tsk], tvk, tpp)$</li>
+<li>$sk_i = tsk_i, i\in [n]=\{1, \cdots, n\}$, $vk := tvk$ and $pp := (\mathcal{K}, n, t, P, tpp)$</li>
+</ul>
+</li>
+<li>$SignUp(C, pwd) \leftarrow ((C, msg_1), \cdots, (C, msg_n))$<ul>
+<li>Run TOPRF, $TOPRF.Setup(1^{\mathcal{K}}, n, t) \rightarrow ([k], opp)$</li>
+<li>Compute $h = TOPRF(k, pwd)$ and $h_i = \mathcal{H}(h \| i), i \in [n]=\{1, \cdots, n\}$</li>
+<li>$msg_i = (k_i, h_i)$</li>
+</ul>
+</li>
+<li>$Store(sk_i, C, msg_i) = rec_{i,C}$<ul>
+<li>$rec_{i,C} = (k_i, h_i)$</li>
+</ul>
+</li>
+<li>$Request(C, pwd, x, \mathcal{T}) \rightarrow ({(C,x,req_i)}_{i\in \mathcal{T}}, st)$<ul>
+<li>Run $TOPRF.Encode(pwd, \rho) = c$ where $\rho \leftarrow \mathbb{G}$</li>
+<li>$req_i := c$ and $st := (C, pwd, \rho, \mathcal{T})$</li>
+</ul>
+</li>
+<li>$Respond(sk_i, REC_i, C, x, req_i) \leftarrow res_i$<ul>
+<li>If $rec_{i,C} \notin REC_i$, output $\perp$. Else parse $rec_{i,C}$ as $(k_i, h_i)$</li>
+<li>Run $TOPRF.Eval(k_i, req_i) \leftarrow z_i$</li>
+<li>Run $NITTG.PartEval(sk_i, C\|x) \leftarrow y_i$</li>
+<li>$res_i := (z_i, SKE.Encrypt(h_i, y_i))$</li>
+</ul>
+</li>
+<li>$Finalize(st, \{res_i\}_{i\in S}) \leftarrow tk$<ul>
+<li>Parse $res_{i}$ as $\left(z_{i}, \text { ctxt }_{i}\right)$ and $st$ as $(C, p w d, \rho, \mathcal{T})$</li>
+<li>Run $TOPRF.Combine(pwd, {(i, z_i)}_{i\in \mathcal{T}}, \rho) \leftarrow h$</li>
+<li>Compute $h_i := \mathcal{H}(h \| i)$ and $y_i := SKE.Decrypt(h_i, ctxt_i)$</li>
+<li>Set $tk = NITTG.Combine({i,y_i}_{i\in \mathcal{T}})$</li>
+</ul>
+</li>
+<li>$Verfiy(vk, C, x, tk) \leftarrow \{0, 1\}$<ul>
+<li>Output $NITTG.Verify(tvk, C\|x, tk)$</li>
+</ul>
+</li>
+</ul>
+<p>按照我的理解GlobalSetup和SignUp，是比n个authentication server更高一级Manage server做的事情。因为在SignUp的第二个步骤中，需要执行$h = TOPRF(k, pwd)$<br>而我们的$k$值，不可能保存在每个authentication server中。Store是分别由n个authentication server分别完成。<br>接下来，用户登录的流程是这样，Client发送Request给每个Serve，每个Serve返回Respond给Client。<br>Client执行Finalize获得Token值tk，并在接下来的每次获取资源时，Server执行Verify，验证Client身份。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以下是安全性的Theorem，Security Theorem：<br>If NITTG satisfies the unforgeability property, TOPRF satisfies the unpredictability, SKE satisfies the CPA-secure property,<br>then Pasta scheme satisfies the passwd-safe and unforgeability property under a random oracle.</p>
+<p>总的来说，文章的具体实现的原理还是比较简单的。出彩的地方在于，问题的提炼（讲故事的能力）。再加上写法比较规范，有具体的实现效率的分析，也有相关安全性的证明，能中顶会，实至名归。</p>
+<p>最后说下自己的个人看法，其实像这篇文章这样，比较偏应用的，平时看的比较少，看的多的还是偏理论的文章。像这篇文章中提到的这种问题和应用场景，其实只有用户量特别大的公司才需要去考虑。<br>所以用户量越大，场景越复杂，才会出现各类的安全问题，这时候可能才需要一些密码学的知识去构建解决发案，也算是做密码学去工业界的一个出路。</p>
+<script type="text/javascript" async src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']]
+        }
+    });
+</script>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/24/algPermutations/" rel="prev" title="排列组合">
+      <i class="fa fa-chevron-left"></i> 排列组合
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E6%9E%84%E9%80%A0"><span class="nav-number">1.2.</span> <span class="nav-text">方案构造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NITTG"><span class="nav-number">1.2.1.</span> <span class="nav-text">NITTG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TOPRF"><span class="nav-number">1.2.2.</span> <span class="nav-text">TOPRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E6%9E%84%E9%80%A0-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">方案构造</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wffx</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wffx</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

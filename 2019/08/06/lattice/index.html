@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文主要分享一下，自己读研两年的关于密码学学习的一些思考和体会。（未完，格密码学篇）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学学习总结（二）">
+<meta property="og:url" content="http://example.com/2019/08/06/lattice/index.html">
+<meta property="og:site_name" content="My Blog">
+<meta property="og:description" content="本文主要分享一下，自己读研两年的关于密码学学习的一些思考和体会。（未完，格密码学篇）">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-08-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-01T12:21:47.835Z">
+<meta property="article:author" content="wffx">
+<meta property="article:tag" content="crypto">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2019/08/06/lattice/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh'
+  };
+</script>
+
+  <title>密码学学习总结（二） | My Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">My Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/06/lattice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wffx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="My Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          密码学学习总结（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-08-06 00:00:00" itemprop="dateCreated datePublished" datetime="2019-08-06T00:00:00+08:00">2019-08-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-03-01 20:21:47" itemprop="dateModified" datetime="2021-03-01T20:21:47+08:00">2021-03-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cryptography/" itemprop="url" rel="index"><span itemprop="name">cryptography</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要分享一下，自己读研两年的关于密码学学习的一些思考和体会。（未完，格密码学篇）</p>
+<span id="more"></span>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我在第一篇写到过，secret sharing想发好的文章越来越难了，当时一度走了很多弯路，最后也没有很好想法。也逐渐意识到，这条路不太好走。<br>研一的时候，自己无聊时，会经常看其他牛组的科研主页，看的最多的两个组，就是Stanford的Boneh组还有MIT的CSAIL组，你能在他们组看到他们的研究方向和成果，基本上我后来看的一大部分文章都和这两个组有直接或者间接的关系，也是从那时起开始接触了解到后量子密码学(Post-quantum cryptography)。</p>
+<p>简而言之，现有的大数分解，离散对数，二次剩余难题等都有多项式时间内的量子算法去破解，所以当前密码学研究的一大热点就是寻找能够抵御量子算法的数学难题，并构造相应的密码系统。<br>其中个人觉得目前最有前途的两个方向，一是lattice cryptography，二是isogeny cryptography。前者是我后来看文章的主体方向。后者，曾经去了解过，搞的那一套是椭圆曲线上各种模同态之类的，和之前密码学课上的椭圆曲线加解密算法完全不是一个概念，别说introduction了，abstract看的都费劲，而且这方面文章还不是很多，坑还很多，奈何自己数学功底太差，缺的代数知识太多，搞不懂。</p>
+<h2 id="格密码"><a href="#格密码" class="headerlink" title="格密码"></a>格密码</h2><p>这部分本来是想介绍一些格的基本理论的，后来想想这方面的survey这么多，还是不多费口舌了，另外讲清楚得敲很多公式，markdown实际显示效果也不如latex，就不费劲折腾了。下面大概说下，我的学习经历和过程，给后来人一个建议。</p>
+<h3 id="格密码基础"><a href="#格密码基础" class="headerlink" title="格密码基础"></a>格密码基础</h3><p>这一阶段，主要学习格的定义和一些基本知识，比如：格基约化，LLL算法，SVP难题，SIVP难题之类的。这部分我推荐两本书，一本是UTM系列中的An Introduction to Mathematical Cryptography，有一章节专门介绍Lattice的。写的通俗易通。另外一本书是Lattice-based Cryptography，作者是Daniele Micciancio和Oded Regev。你看早期2000-2010年间的格密码文章能经常看到这两人的身影。这本书我是跳着看的，没有全看完。</p>
+<h3 id="现代的格密码基础"><a href="#现代的格密码基础" class="headerlink" title="现代的格密码基础"></a>现代的格密码基础</h3><p>现今看到的大部分格密码相关的方案主要是依赖于Learning with Errors (LWE), Short Integer Solution (SIS)难题，后来有了环上推广的版本，Ring-LWE和Ring-SIS。这些难题的提出，主要是因为早期SVP,SIVP是worst case下难题，需要用额外的技巧，来提出新的难题，使得能从worst case规约到average case。这部分的工作主要集中在2000年到2008年间。主要的成果也是SIS和LWE的提出。关于其中的规约一直读的一直半解，实在惭愧。</p>
+<p>了解了基本概念后，强烈建议阅读Peikert的<a target="_blank" rel="noopener" href="https://web.eecs.umich.edu/~cpeikert/pubs/lattice-survey.pdf">survey</a>,能节约你的大量时间去了解很多细枝末节的构造方案技巧，对现代的格密码方案有个初步的认识。期间除了看这边survey外，也看了很多关于lattice的报告ppt，有的时候看这些论文会太形式化，看这些ppt会比较简洁，有的时候还会有例子说明，能帮助理解。这篇survey花了我很长时间，尤其是到Ring-LWE和Ring-SIS时，我又去找了原论文阅读，恶补了一波代数知识,才勉强搞明白。但是，时至今日，On Ideal Lattices and Learning with error over rings_full version和On Lattices, Learning with Errors, Random Linear codes, and Cryptography这两篇文章里的，LWE规约和Ring-LWE规约还是看不懂。就大概不那么严谨的能明白为什么LWE和Ring-LWE是难的。</p>
+<p>此外，你如果认真去读这篇survey的话，就又会去看些复杂度理论，不可区分性的形式化定义，零知识的证明的一些arguments，甚至是安全两方计算和多方计算的一些基本概念和经典方案。总之这部分，是我觉得读这篇survey另一大收获。后来偶然在知乎上看到有人罗列了一个密码学书单，看完后深有体会。附上<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/60604123">链接</a>.</p>
+<h2 id="全同态加密"><a href="#全同态加密" class="headerlink" title="全同态加密"></a>全同态加密</h2><p>这玩意真是又爱又恨。。。（待续）</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/crypto/" rel="tag"># crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/26/secertSharing/" rel="prev" title="密码学学习总结（一）">
+      <i class="fa fa-chevron-left"></i> 密码学学习总结（一）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/10/algStringCa/" rel="next" title="计算字符串表达式">
+      计算字符串表达式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%AF%86%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">格密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%AF%86%E7%A0%81%E5%9F%BA%E7%A1%80"><span class="nav-number">2.1.</span> <span class="nav-text">格密码基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%B0%E4%BB%A3%E7%9A%84%E6%A0%BC%E5%AF%86%E7%A0%81%E5%9F%BA%E7%A1%80"><span class="nav-number">2.2.</span> <span class="nav-text">现代的格密码基础</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%90%8C%E6%80%81%E5%8A%A0%E5%AF%86"><span class="nav-number">3.</span> <span class="nav-text">全同态加密</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wffx</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wffx</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
